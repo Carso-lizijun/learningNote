@@ -1185,12 +1185,14 @@ SqlSession是一个接口，它有两个实现类：DefaultSqlSession（默认�
 3,sqlsession中的api selectList....
 它底层的MappedStatement与Mapper配置文件中的一个select/update/insert/delete节点相对应。mapper中配置的标签都被封装到了此对象中，主要用途是描述一条SQL语句。
 
+sql被解析成了configuration对象中的一部分，最终都是放到了sqlsession里面
 <select id="getUser" resultType="user" >
     select * from user where id=#{id}
   </select>
 
 这样的一个select标签会在初始化配置文件时被解析封装成一个MappedStatement对象，然后存储在Configuration对象的mappedStatements属性中，mappedStatements 是一个HashMap，
 存储时key = 全限定类名 + 方法名，value = 对应的MappedStatement对象。
+
 
 4， executor.query()，把SQL放进prepareStatement，运行
 
@@ -1200,7 +1202,8 @@ UserMapper mapper = sqlSession.getMapper(UserMapper.class);
 List<User> list = mapper.getUserByName("tom");
 
 Mapper接口我们都没有实现的方法却可以使用，是为什么呢？答案很简单 动态代理
-开始之前介绍一下MyBatis初始化时对接口的处理：MapperRegistry是Configuration中的一个属性，它内部维护一个HashMap用于存放mapper接口的工厂类，每个接口对应一个工厂类。mappers中可以配置接口的包路径，或者某个具体的接口类。
+开始之前介绍一下MyBatis初始化时对接口的处理：MapperRegistry是Configuration中的一个属性，它内部维护一个HashMap用于存放mapper接口的工厂类，每个接口对应一个工厂类。
+mappers中可以配置接口的包路径，或者某个具体的接口类。
 
 <!-- 将包内的映射器接口实现全部注册为映射器 -->
 <mappers>
@@ -1208,20 +1211,45 @@ Mapper接口我们都没有实现的方法却可以使用，是为什么呢？�
   <package name="com.demo.mapper"/>
 </mappers>
 
-当解析mappers标签时，它会判断解析到的是mapper配置文件时，会再将对应配置文件中的增删改查标签一 一封装成MappedStatement对象，存入mappedStatements中。（上文介绍了）
+当解析mappers标签时，它会判断解析到的是mapper配置文件时，会再将对应配置文件中的增删改查标签一一封装成
+Map<String, MappedStatement> mappedStatements集合中，（上文介绍了），而key就是MappedStatement的id
 当判断解析到接口时，会创建此接口对应的MapperProxyFactory对象，存入HashMap中，key = 接口的字节码对象，value = 此接口对应的MapperProxyFactory对象。
 
-MapperRegistry //这个类中维护一个HashMap存放MapperProxyFactory
+
+MapperRegistry //这个类中维护一个HashMap存放 MapperProxyFactory
+
+mapper注册器(MapperRegistry)
+
+ 　　mapper注册器用于将所有的mapper接口添加到内存中,Mapper注册器自身维护着两个属性，config和knownMappers,其中knownMappers是一个 Class<?>, 
+ MapperProxyFactory<?>的集合,表示某个类路径对应的Mapper代理工厂,MapperProxyFactory做的事比较简单,目的就是通过代理模式创建处一个MapperProxy,
+ MapperProxy实现了InvocationHandler接口,这表示MapperProxy会通过invoke()方法实现Mapper接口指定方法的调用,MapperProxy并不直接实现Mapper接口的调用,
+ 而是在内部维系着一个<Mapper.Method,MapperMethod>的map集合,在上节看到,MapperMethod中包装了Sqlsession的相关方法,所以MapperProxy本质上只是代理了<Method,MapperMethod>之间的映射关系。
+
+ 
+https://www.cnblogs.com/wangle1001986/p/9072630.html 
+
+MapperProxy
+mapperProxy应该算作一个包装类,本身不做任何事情,它最主要的作用就是维系着<Method,MapperMethod>集合,这样mapper接口就知道即将执行的是哪种SQL语句了,
+然后委托给Sqlsession进行查询了。 看如下的代码,该代码的执行流程为:
+
+1.判断代理类是否是方法所在的类,如果是,直接执行该方法。
+2.判断是否是模式方法,如果是则执行默认方法，是否是默认方法的判断条件如下
+
+(method.getModifiers()
+     & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC
+     && method.getDeclaringClass().isInterface()
+3.如果以上两者都不是,那么从缓存的集合中取出对应的MapperMethod,调用其中的execute方法。
+ 
+ 
 
 正文：
 进入sqlSession.getMapper(UserMapper.class)中
 			
-			// 里面通过动态代理工厂生成示例。
+// 里面通过动态代理工厂生成示例。
       return mapperProxyFactory.newInstance(sqlSession);
 在动态代理返回了示例后，我们就可以直接调用mapper类中的方法了，最终还是会调用SQLSession中的方法。
 
 
-(2021-04-28)
 
 
 mybatis缓存，存储过程怎么使用，debug一下CBX旧的UI Mybatis查询例子，看看原理
@@ -1233,6 +1261,12 @@ SqlSessionFactory 与 SqlSession.
 首先，SqlSessionFactoryBuilder去读取mybatis的配置文件，然后build一个DefaultSqlSessionFactory。
 我们获取到SqlSessionFactory之后，就可以通过SqlSessionFactory去获取SqlSession对象。
 可以调用SqlSession中一系列的select...,  insert..., update..., delete...方法轻松自如的进行CRUD操作（然后最终都是prepareStatement.execute）
+ SqlSession sqlSession = factory.openSession();
+ sqlSession.selectList...普通方式
+ 
+ //这里不再调用SqlSession 的api，而是获得了接口对象，调用接口中的方法。接口方式
+		UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+		List<User> list = mapper.getUserByName("tom");
 
 
 写的接口和xml里的SQL怎么用的：
@@ -1245,10 +1279,12 @@ SqlSessionFactory 与 SqlSession.
 
 一级缓存（本地缓存）：
 　　一级缓存也叫本地缓存，MyBatis 的一级缓存是在会话（SqlSession）层面进行缓存的。MyBatis 的一级缓存是默认开启的，不需要任何的配置。
-所以缓存只可能放在Executor 里面维护——SimpleExecutor/ReuseExecutor/BatchExecutor 的父类BaseExecutor 的构造函数中持有了PerpetualCache。在同一个会话里面，多次执行相同的SQL 语句，会直接从内存取到缓存的结果，不会再发送SQL 到数据库。
+所以缓存只可能放在Executor 里面维护——SimpleExecutor/ReuseExecutor/BatchExecutor 的父类BaseExecutor 的构造函数中持有了PerpetualCache。
+在同一个会话里面，多次执行相同的SQL 语句，会直接从内存取到缓存的结果，不会再发送SQL 到数据库。
 但是不同的会话里面，即使执行的SQL 一模一样（通过一个Mapper 的同一个方法的相同参数调用），也不能使用到一级缓存。
 
-MyBatis在开启一个数据库会话时，会 创建一个新的SqlSession对象，SqlSession对象中会有一个新的Executor对象，Executor对象中持有一个新的PerpetualCache对象；当会话结束时，SqlSession对象及其内部的Executor对象还有PerpetualCache对象也一并释放掉。
+MyBatis在开启一个数据库会话时，会创建一个新的SqlSession对象，SqlSession对象中会有一个新的Executor对象，Executor对象中持有一个新的PerpetualCache对象；
+当会话结束时，SqlSession对象及其内部的Executor对象还有PerpetualCache对象也一并释放掉。
 如果SqlSession调用了close()方法，会释放掉一级缓存PerpetualCache对象，一级缓存将不可用；
 如果SqlSession调用了clearCache()，会清空PerpetualCache对象中的数据，但是该对象仍可使用；
 SqlSession中执行了任何一个update操作(update()、delete()、insert()) ，都会清空PerpetualCache对象的数据，但是该对象可以继续使用；
@@ -1263,7 +1299,8 @@ MyBatis会先从二级缓存中取输入，其次才是一级缓存，即MyBatis
 
 注：二级缓存是事务性的。这意味着，当 SqlSession 完成并提交时，或是完成并回滚，但没有执行 flushCache=true 的 insert/delete/update 语句时，缓存会获得更新。
 
-为什么增删改操作会清空缓存？在CachingExecutor 的update()方法里面会调用flushCacheIfRequired(ms)，isFlushCacheRequired 就是从标签里面渠道的flushCache 的值。而增删改操作的flushCache 属性默认为true。
+为什么增删改操作会清空缓存？在CachingExecutor 的update()方法里面会调用flushCacheIfRequired(ms)，isFlushCacheRequired 就是从标签里面渠道的flushCache 的值。
+而增删改操作的flushCache 属性默认为true。
 
 什么时候开启二级缓存？
 
