@@ -1,0 +1,2927 @@
+java:
+1,java String占多少字节
+“java中一个int占4个字节,由于java是unicode编码,一个char可以占两个字节,可以存储一个汉字。
+一个String,要看有几个字母或者几个汉字,一个英文字母就是一个字节,一个汉字就是两个字节,以此类推计算。” 最大约等于384M的内存
+https://blog.csdn.net/zp357252539/article/details/108542707
+
+
+内部类的优点
+我们为什么要使用内部类呢？因为它有以下优点：
+一个内部类对象可以访问创建它的外部类对象的内容，包括私有数据！
+内部类不为同一包的其他类所见，具有很好的封装性；
+
+成员内部类可以访问外部类所有的变量和方法，包括静态和非静态，私有和公有。成员内部类依赖
+于外部类的实例，它的创建方式 外部类实例.new 内部类() ，外部类实例已经创建了：
+
+匿名内部类，没有名字的内部类
+new Service() {
+      public void method() {
+      }
+    }.method();
+
+//匿名内部类必须继承或实现一个已有的接口
+interface Service{
+  void method();
+}
+
+构造器（constructor）是否可被重写（override）
+构造器不能被继承，因此不能被重写，但可以被重载
+
+重载：发生在同一个类中，方法名相同参数列表不同（参数类型不同、个数不同、顺序不同），与
+方法返回值和访问修饰符无关，即重载的方法不能根据返回类型进行区分
+重写：发生在父子类中，方法名、参数列表必须相同，返回值小于等于父类，抛出的异常小于等于父类，
+访问修饰符大于等于父类（里氏代换原则）；如果父类方法访问修饰符为private则子类中就不是重写
+
+hashCode() 的作用是获取哈希码，也称为散列码；它实际上是返回一个int整数。这个哈希码的作
+用是确定该对象在哈希表中的索引位置。hashCode() 定义在JDK的Object.java中，这就意味着
+Java中的任何类都包含有hashCode()函数。比如HashSet，会先比较hashCode，如果相同，再用Equals比较。
+
+. 对象的相等与指向他们的引用相等，两者有什么不同？
+    if (a.equals(b)) // true
+      System.out.println("aEQb");
+    if (42 == 42.0) { // true
+      System.out.println("true");
+    }
+  }
+}
+对象的相等 比的是内存中存放的内容是否相等而 引用相等 比较的是他们指向的内存地址是否相
+等。
+
+. 当一个对象被当作参数传递到一个方法后，此方法可改变这个对象的属性，并
+可返回变化后的结果，那么这里到底是值传递还是引用传递
+是值传递。Java 语言的方法调用只支持参数的值传递
+
+
+什么是反射机制？
+JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；
+对于任意一个对象，都能够调用它的任意一个方法和属性；
+
+实现方式:静态编译和动态编译
+静态编译：在编译时确定类型，绑定对象
+动态编译：运行时确定类型，绑定对象
+
+
+Java获取反射的三种方法
+1.通过new对象实现反射机制 2.通过路径实现反射机制 3.通过类名实现反射机制
+//方式一(通过建立对象)
+Student stu = new Student();
+Class classobj1 = stu.getClass();
+// 方式二 Class
+Class classobj2 = Class.forName("fanshe.Student");
+//方式三（通过类名）
+Class classobj3 = Student.class;
+
+
+
+字符型常量和字符串常量的区别
+1. 形式上: 字符常量是单引号引起的一个字符 字符串常量是双引号引起的若干个字符
+2. 含义上: 字符常量相当于一个整形值(ASCII值),可以参加表达式运算 字符串常量代表一个地址值(该
+字符串在内存中存放位置)
+3. 占内存大小 字符常量只占一个字节 字符串常量占若干个字节(至少一个字符结束标志)
+
+什么是字符串常量池？
+字符串常量池位于堆内存中，专门用来存储字符串常量，可以提高内存的使用率，避免开辟多块空
+间存储相同的字符串，在创建字符串时 JVM 会首先检查字符串常量池，如果该字符串已经存在池
+中，则返回它的引用，如果不存在，则实例化一个字符串放到池中，并返回其引用。
+
+String有哪些特性
+不变性：String 是只读字符串，是一个典型的 immutable 对象，对它进行任何操作，其实都是创
+建一个新的对象，再把引用指向该对象。不变模式的主要作用在于当一个对象需要被多线程共享并
+频繁访问时，可以保证数据的一致性。
+常量池优化：String 对象创建之后，会在字符串常量池中进行缓存，如果下次创建同样的对象时，
+会直接返回缓存的引用。
+final：使用 final 来定义 String 类，表示 String 类不能被继承，提高了系统的安全性。
+
+String str="i"与 String str=new String(“i”)一样吗？
+不一样，因为内存的分配方式不一样。String str="i"的方式，java 虚拟机会将其分配到常量池中；
+而 String str=new String(“i”) 则会被分到堆内存中。
+
+String s = new String(“xyz”);创建了几个字符串对象
+两个对象，一个是常量池中的"xyz"，一个是用new创建在堆上的对象。
+String str1 = "hello"; //str1指向常量池中 
+String str2 = new String("hello"); //str2指向堆上的对象
+
+如何将字符串反转？
+使用 StringBuilder 或者 stringBuffer 的 reverse() 方法。
+
+
+String类中使用字符数组保存字符串，private final char value[]，所以string对象是不可变
+的。StringBuilder与StringBuffer都继承自AbstractStringBuilder类，在AbstractStringBuilder中
+也是使用字符数组保存字符串，char[] value，这两种对象都是可变的。
+线程安全性
+String中的对象是不可变的，也就可以理解为常量，线程安全。AbstractStringBuilder是
+StringBuilder与StringBuffer的公共父类，定义了一些字符串的基本操作，如expandCapacity、
+append、insert、indexOf等公共方法。
+StringBuffer对方法加了同步锁或者对调用的方法加了同
+步锁，所以是线程安全的。StringBuilder并没有对方法进行加同步锁，所以是非线程安全的。
+
+
+
+
+
+自动装箱与拆箱
+装箱：将基本类型用它们对应的引用类型包装起来；
+拆箱：将包装类型转换为基本数据类型；
+
+Java 为每个原始类型提供了包装类型：
+原始类型: boolean，char，byte，short，int，long，float，double
+包装类型：Boolean，Character，Byte，Short，Integer，Long，Float，Double
+
+ Integer a= 127 与 Integer b = 127相等吗
+对于对象引用类型：==比较的是对象的内存地址。
+对于基本数据类型：==比较的是值。
+如果整型字面量的值在-128到127之间，那么自动装箱时不会new新的Integer对象，而是直接引用常量池中的
+Integer对象，超过范围 a1==b1的结果是false
+public static void main(String[] args) {
+ Integer a = new Integer(3);
+ Integer b = 3; // 将3自动装箱成Integer类型
+int c = 3;
+ System.out.println(a == b); // false 两个引用没有引用同一对象
+System.out.println(a == c); // true a自动拆箱成int类型再和c比较
+System.out.println(b == c); // true
+ Integer a1 = 128;
+ Integer b1 = 128;
+ System.out.println(a1 == b1); // false
+ Integer a2 = 127;
+ Integer b2 = 127;
+ System.out.println(a2 == b2); // true
+
+
+
+
+
+
+面向对象编程三大特性:
+什么是封装
+把客观事物封装成抽象的类，并且把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏
+什么是继承
+继承是从已有的类中派生出新的类，新的类能吸收已有类的数据属性和行为，并能扩展新的能力
+多态指的是类和类的关系，两个类由继承关系，存在有方法的重写，故而可以在调用时有父类引用指向子类对象。
+查看Object类中源码，发现其equals方法也是 == 去比较首地址值,String类覆盖了，就比较值
+线程池的使用：
+
+com.core.cbx.action.BatchAction.process(T)
+https://www.cnblogs.com/williamjie/p/9485723.html
+--newFixedThreadPool
+Executors这个类提供了几个线程池:
+创建一个指定工作线程数量的线程池。每当提交一个任务就创建一个工作线程，如果工作线程数量达到线程池初始的最大数，则将提交的任务存入到池队列中
+ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+fixedThreadPool.execute(new Runnable() {
+    public void run() {
+因为线程池大小为3，每个任务输出index后sleep 2秒，所以每两秒打印3个数字。
+
+我们重点来说一下堆和栈：
+栈内存:栈内存首先是一片内存区域，存储的都是局部变量，凡是定义在方法中的都是局部变量（方法外的是全局变量），for循环内部定义的也是局部变量，
+是先加载函数才能进行局部变量的定义，所以方法先进栈，然后再定义变量，变量有自己的作用域，一旦离开作用域，变量就会被释放。栈内存的更新速度很快，因为局部变量的生命周期都很短。
+堆内存:存储的是数组和对象（其实数组就是对象），凡是new建立的都是在堆中，堆中存放的都是实体（对象），实体用于封装数据，而且是封装多个（实体的多个属性），
+如果一个数据消失，这个实体也没有消失，还可以用，所以堆是不会随时释放的，但是栈不一样，栈里存放的都是单个变量，变量被释放了，那就没有了。
+堆里的实体虽然不会被释放，但是会被当成垃圾，Java有垃圾回收机制不定时的收取。
+
+
+对于一个类而言，按照如下顺序执行：
+（静态变量、静态代码块）>（初始化普通代码块）>构造函数 >普通变量
+
+当涉及到继承时，按照如下顺序执行：
+父类的静态代码块，父类静态变量，子类的静态代码块，子类静态变量
+父类的构造代码块，父类的构造函数，父类普通成员变量
+子类的构造代码块，子类的构造函数，子类普通成员变量
+
+
+https://www.cnblogs.com/yuxiaole/p/9570850.html
+Java 对象如果要比较是否相等，则需要重写 equals 方法，同时重写 hashCode 方法，而且 hashCode 方法里面使用质数 31。
+为什么要重写 equals 方法
+　　因为不重写 equals 方法，执行 user1.equals(user2) 比较的就是两个对象的地址（即 user1 == user2），肯定是不相等的
+为什么要重写 hashCode 方法
+既然比较两个对象是否相等，使用的是 equals 方法，那么只要重写了 equals 方法就好了，干嘛又要重写 hashCode 方法呢？
+其实当 equals 方法被重写时，通常有必要重写 hashCode 方法，以维护 hashCode 方法的常规协定，该协定声明相等对象必须具有相等的哈希码。
+hashCode 是用于散列数据的快速存取，如利用 HashSet/HashMap/Hashtable 类来存储数据时，都会根据存储对象的 hashCode 值来进行判断是否相同的。
+怎么重写:
+生成一个 int 类型的变量 result，并且初始化一个值，比如17
+对类中每一个重要字段，也就是影响对象的值的字段，也就是 equals 方法里有比较的字段，进行以下操作：
+a. 计算这个字段的值 filedHashValue = filed.hashCode(); b. 执行 result = 31 * result + filedHashValue;最后返回计算后的int
+
+
+
+
+
+java集合：
+ArrayList 不是线程安全的，如果遇到多线程场景，可以通过 Collections 的 synchronizedList 方
+法将其转换成线程安全的容器后再使用。
+
+List 和 Set 的区别
+List , Set 都是继承自Collection 接口
+List 特点：一个有序、容器，元素可以重复，可以插入多个null元素，元素都有索引。常用的实现类有 ArrayList、LinkedList 和 Vector。
+Set 特点：一个无序（存入和取出顺序有可能不一致）容器，不可以存储重复元素，只允许存入一个null元素，必须保证元素唯一性。
+Set 接口常用实现类是 HashSet、LinkedHashSet 以及TreeSet。
+
+Set和List对比
+Set：检索元素效率低下，删除和插入效率高，插入和删除不会引起元素位置改变。
+List：和数组类似，List可以动态增长，查找元素效率高，插入删除元素效率低。
+
+说一下 HashSet 的实现原理？
+HashSet 是基于 HashMap 实现的，HashSet的值存放于HashMap的key上，HashMap的value统一为present，HashSet 不允许重复的值。
+
+HashSet如何检查重复？HashSet是如何保证数据不可重复的？
+向HashSet 中add ()元素时，判断元素是否存在的依据，不仅要比较hash值，同时还要结合
+equles 方法比较。
+HashSet 中的add ()方法会使用HashMap 的put()方法。
+HashMap 的 key 是唯一的，HashMap 比较key是否相等是先比较hashcode 再比较equals。
+
+hashCode（）与equals（）的相关规定：
+1. 如果两个对象相等，则hashcode一定也是相同的
+hashCode是jdk根据对象的地址或者字符串或者数字算出来的int类型的数值
+2. 两个对象相等,则两个equals方法返回true
+3. 两个对象有相同的hashcode值，它们也不一定是相等的，还要看是否equals
+4. 综上，equals方法被覆盖过，则hashCode方法也必须被覆盖
+5. hashCode()的默认行为是对堆上的对象产生独特值。如果没有重写hashCode()，则该class的两个
+对象无论如何都不会相等（即使这两个对象指向相同的数据）。
+
+如果使用Object作为HashMap的Key，应该怎么办呢？
+答：重写 hashCode() 和 equals() 方法
+1. 重写 hashCode() 是因为需要计算存储数据的存储位置，
+2. 重写 equals() 方法，值x，x.equals(null)必须返回false的这几个特性，目的是为了保证key在哈希表中的唯一性；
+
+HashMap 与 HashTable 有什么区别？
+1. 线程安全： HashMap 是非线程安全的，HashTable 是线程安全的；HashTable 内部的方法基本
+都经过  synchronized 修饰。（如果你要保证线程安全的话就使用 ConcurrentHashMap ）；
+2. 效率： 因为线程安全的问题，HashMap 要比 HashTable 效率高一点。另外，HashTable 基本被
+淘汰，不要在代码中使用它；（如果你要保证线程安全的话就使用 ConcurrentHashMap ）；
+3. 对Null key 和Null value的支持： HashMap 中，null 可以作为键，这样的键只有一个，可以有
+一个或多个键所对应的值为 null。但是在 HashTable 中 put 进的键值只要有一个 null，直接抛
+NullPointerException。
+ 4，底层数据结构： JDK1.8 以后的 HashMap 在解决哈希冲突时有了较大的变化，当链表长度大于阈
+值（默认为8）时，将链表转化为红黑树，以减少搜索时间。Hashtable 没有这样的机制。
+
+如何决定使用 HashMap 还是 TreeMap？
+对于在Map中插入、删除和定位元素这类操作，HashMap是最好的选择。然而，假如你需要对一
+个有序的key集合进行遍历，TreeMap是更好的选择。基于你的collection的大小，也许向
+HashMap中添加元素会更快，将map换为TreeMap进行有序key的遍历。
+
+HashMap 和 ConcurrentHashMap 的区别
+1. ConcurrentHashMap是线程安全的。
+2. HashMap的键值对允许有null，但是ConCurrentHashMap都不允许。
+
+Array 和 ArrayList 有何区别？
+Array 可以存储基本数据类型和对象，ArrayList 只能存储对象。
+Array 是指定固定大小的，而 ArrayList 大小是自动扩展的。
+Array 内置方法没有 ArrayList 多，比如 addAll、removeAll、iteration 等方法只有 ArrayList有。
+
+如何实现 Array 和 List 之间的转换？
+Array 转 List： Arrays. asList(array) ；
+List 转 Array：List 的 toArray() 方法。
+
+48. comparable 和 comparator的区别？
+共同点：
+
+都可以进行排序，都可以自定义比较规则
+两者都是返回一个描述对象之间关系的int
+不同（面试题）
+
+Comparator与Comparable同时存在的情况下，比较器Comparator优先级高。
+使用Comparable需要修改原先的实体类，是属于一种自然排序，而Comparator不用修改原先的类的。
+
+
+Collections 工具类的 sort 方法有两种重载的形式，
+第一种要求传入的待排序容器中存放的对象比较实现 Comparable 接口以实现元素的比较；
+第二种不强制性的要求容器中的元素必须可比较，但是要求传入第二个参数，参数是Comparator
+接口的子类型（需要重写 compare 方法实现元素的比较），相当于一个临时定义的排序规则，其
+实就是通过接口注入比较元素大小的算法，
+
+
+
+
+collection：(ArrayList(Object数组)，LinkedList(双向链表 保存着上一个和下一个对象的引用)，Vector)List(有序，可以多个null，可重复) Set(不可重复，只允许一个null,大部分无序，Treeset有序)
+Map：(Hashmap,Hashtable) key唯一且大部分无序
+HashMap的主干是一个Entry数组+哈希值(底层hash算法计算出来的)。Entry是HashMap的基本组成单元，每一个Entry包含一个key-value键值对
+我们有时候会听到一种笼统的说法，认为List是有序的(这个可以说)，Set和Map是无序的，其实不然，在Set和Map中也有通过双向链表来实现有序的LinkedHashSet和LinkedHashMap
+LinkedHashSet底层是一个哈希表(数组+链表、红黑树)+链表。多了一条链表(记录元素的存储顺序),保证元素有序。
+Hash冲突： 如果两个不同的元素，通过哈希函数得出的实际存储地址相同
+java8的解决方案 链地址法，数组+链表的方式(链表则是主要为了解决哈希冲突而存在的)。
+
+(String(SET,GET),Hash(HMSET, HGET),List(lpush,lrange),Set(sadd,smembers),zset(zadd))
+
+REDIS:
+数据库中采用哈希表存储键值对，其中value可以为不同类型的数据结构。
+Redis 默认有 16 个库，库编号为 db0 - db15。数据库之间的数据是相互隔离的、互不影响的。
+select 索引值,如select 1
+
+1.  string 单k单v
+命令	备注
+get k	
+set k v	
+append k v	追加到指定key 对应value的末尾
+strlen k	
+setnx k v	key不存在,则设置, 存在不操作
+incr k	只能对数字操作, v加1
+decr 1	只能对数字操作, v减1
+incrby / decrby k 步长	对数字操作, 指定步长加减
+mset k1 v1 k2 v2	同时设置多个
+mget k1 k2	同时获取多个
+msetnx k1 v1 k2 v2	指定key都不存,才可以成功
+getrange k 起始位置 结束位置	类似substring
+setrange k 起始位置 v	从起始位置开始,覆盖
+
+
+2. list 单k多v
+
+底层实现是双层链表
+
+命令	备注
+lpush/rpush	左/右插入
+lpop/rpop	
+rpoplpush	右出左进
+lrange k start end	从左到右 指定索引
+lindex k index	获取指定索引的元素
+llen k	list的长度
+linsert k after/before v newValue	在v后/前面插入newValue
+lrem k n value	从左删除n的value
+
+格式: lpush name value
+
+3. set
+
+底层实是value为null的hash表
+
+命令	备注
+sadd k v1 v2 v3	
+smembers k	获取所有制
+sismembers k v	判断是不是包含
+scard k	返回元素个数
+srem k v1 v2	删除某个元素
+spop k	随机吐出一个值, 可用抽奖 会删除
+srandmember k n	随机从集合抽取n个值, 不会删除
+sinter/ sunion/ sdiff k1 k2	交集. 并集. 差集
+4. hash
+
+类似hashmap
+
+命令	备注
+hset/hget k field v	
+hmset k field1 v1 field2 v2	
+hexists k field	hash是否存在这个键值
+hkeys/hvals k	列出所有的field或者value
+hincrby k field step	增加指定长度, 针对数字
+hsetnx k field v	
+/recli-cli -raw --- 解决中文乱码
+
+5. zset
+
+---zset特殊之处在于每一个成员都关联一个score
+
+命令	备注
+zadd k score1 value1 score2 value2	
+arange k start end	根据score 排序, 按照分数正序 返回有序
+zrangebyscore k min max	返回score介于之间的数 从小到大
+zreverangebyscore k max min	从大到小返回
+zincrby k step value	给指定v 的score增加多少
+zrem k v	删除指定v数据
+zcount k min max	返回指定区间的个数
+zrank k v	返回该值在集合的排名, 从0开始
+
+
+
+
+面试题1. 知道redis为什么这么快吗？
+首先它是基于内存，单线程的模型，减少线程间切换和竞争，
+
+说一下Redis的持久化的方式
+AOF:记录下所有改变数据库状态的命令
+原理：Redis 将所有对数据库进行过写入的命令（及其参数）记录到 AOF 文件
+AOF 保存模式:三种，不保存，每秒，每命令
+优点：可读性高
+缺点：文件大，恢复时间长
+
+RDB持久化的原理：记录某个时间点全部数据的快照
+方式：SAVE：会阻塞Redis Server的进程，直到RDB文件创建完  BGSAVE：由子线程来创建不阻塞
+触发：redis.conf 配置 SAVE m n定时(用的BGSAVE)，主从复制是
+优点：文件小，恢复快
+缺点：最近一次的会丢掉
+
+Redis 是如何进行主从复制:
+多台 Redis 服务器时，肯定就有一台主服务器和多台从服务器。一般来说，主服务器进行写操作，从服务器进行读操作。主写完后，会把sync命令发给从，请求同步
+全量复制：用于初次复制或其他无法进行部分复制的情况，将主节点中的所有数据都发送给从节点，是一个非常重型的操作。
+部分复制：用于网络中断等情况后的复制，只将中断期间主节点执行的写命令发送给从节点，与全量复制相比更加高效。
+需要注意的是，如果网络中断时间过长，导致主节点没有能够完整地保存中断期间执行的写命令，则无法进行部分复制，仍使用全量复制。
+
+
+知道什么是热key吗？热key问题怎么解决？
+：突然有几十万的请求去访问redis上的某个特定key
+：把热key打散到不同的服务器
+
+缓存击穿：就是单个key并发访问过高，缓存过期后，这些请求穿透到DB
+解决方案：加锁更新，比如请求查询A，发现缓存中没有，对A这个key加锁，同时去数据库查询数据，写入缓存，再返回给用户，
+这样后面的请求就可以从缓存中拿到数据了。
+
+缓存穿透
+缓存穿透是指查询不存在缓存中的数据，每次请求都会打到DB，就像缓存不存在一样。
+解决方案：布隆过滤器,对请求进行过滤
+
+缓存雪崩
+当某一时刻发生大规模的缓存失效的情况，比如你的缓存服务宕机了，会有大量的请求进来直接打到DB上
+解决方案：针对不同key设置不同的过期时间，避免同时过期限流，如果redis宕机，可以限流，避免同时刻大量请求打崩DB
+
+Redis的过期策略：
+惰性删除：查询key的时候才检测，如果已经过期，则删除。缺点：如果这些过期的key没有被访问，那么他就一直无法被删除，而且一直占用内存。
+定期删除：每隔一段时间做一次检查，删除里面的过期key。由于不可能对所有key去做轮询来删除，所以redis会每次随机取一些key去做检查和删除。
+redis的内存淘汰机制：1，已设置过期时间的key中，移出最近最少使用的key进行淘汰  2，从已设置过期时间的key中，移出将要过期的key
+3，从已设置过期时间的key中随机选择key淘汰  4，从key中选择最近最少使用的进行淘汰  5，从key中随机选择key进行淘汰  6，当内存达到阈值的时候，新写入操作报错
+
+怎么实现Redis的高可用？
+主从架构：简单的实现高可用的方案，核心就是主从同步。主从同步的原理如下
+缺点还是很明显的，假设master宕机，那么就不能写入数据，那么slave也就失去了作用
+哨兵：哨兵可以同时监视多个主从服务器，并且在被监视的master下线时，自动将某个slave提升为master，然后由新的master继续接收命令
+
+Redis事务机制：
+Redis开启事务用multi指令，在multi指令后面的指令会被放进一个队列中，遇到exec指令时执行队列里面的所有指令，并返回所有执行结果。
+不管指令正确或者错误，都会执行,中途遇见错误指令也会继续执行后面的指令，Redis并没有像mysql那样的事务回滚机制。
+在redis中有一个watch指令，与事务的关系非常紧密。watch指令监控的key如果在执行事务前发生了变化，那么后面的第一个事务不会被执行！
+
+java如何使用Readis：
+
+CBXredis实例：
+最近访问的30条记录:Collections.synchronizedList,变为线程安全的-->里面存放用户最近访问的记录，容量30之间，用户登出，取出按时间排序存进redis。再登录先从redis读取。
+
+RedisTemplate：spring 封装了 RedisTemplate 对象来进行对redis的各种操作
+RedisTemplate中定义了对5种数据结构操作
+redisTemplate.opsForValue().set();//操作字符串
+redisTemplate.opsForHash();//操作hash
+redisTemplate.opsForList();//操作list
+redisTemplate.opsForSet();//操作set
+redisTemplate.opsForZSet();//操作有序set
+
+StringRedisTemplate与RedisTemplate
+两者的关系是StringRedisTemplate继承RedisTemplate。两者的数据是不共通的
+StringRedisTemplate默认采用的是String的序列化策略，RedisTemplate默认采用的是JDK的序列化策略
+
+CBX:Readis使用场景：某段时间内访问量多的商品编号，String，某个用户的最近操作的数据，一些不经常变动的下拉框
+redis默认过期时间：redis默认的是永不过期
+
+如何解决读写不一致？ 
+读写不一致： 1读写操作同时进行时可能出现数据不一致，解决方案：一般给缓存的数据设置过期时间，数据过期则被删除，下次会从数据库查询并更新缓存。
+
+2，先删除缓存，再更新数据库
+解决方案：先删除缓存，再更新数据库：
+删除缓存失败，可以直接抛出异常，此时数据库与缓存数据均无变化，即数据一致
+删除缓存成功，但是更新数据库失败，此时缓存中没有该数据，下次读取时，从数据库中读取并保存到缓存中，从而数据一致
+
+高并发情况，多线程：将命令操作积压到队列中（先进先出），统一操作，比如先删除缓存，再更新数据库，最后再进行读取
+
+3，先更新数据库，再删除缓存
+
+不断重复删除 key，直至可以删除。
+
+写操作的速度慢于读操作，且读操作要先于写操作进入数据库。
+
+
+11、生产环境中的 redis 是怎么部署的？
+面试官心理分析
+看看你了解不了解你们公司的 redis 生产集群的部署架构，如果你不了解，那么确实你就很失职了，你的redis 是主从架构？
+集群架构？用了哪种集群方案？有没有做高可用保证？有没有开启持久化机制确保可以进行数据恢复？线上 redis 给几个 G 的内存？设置了哪些参数？压测后你们 redis 集群承载多少QPS？
+
+
+面试题剖析
+redis cluster，10 台机器，5 台机器部署了 redis 主实例，另外 5 台机器部署了 redis 的从实例， 每个主实例挂了一个从实例，5 个节点对外提供读写服务，
+每个节点的读写高峰 qps 可能可以达到每秒 5 万，5 台机器最多是 25 万读写请求/s。
+
+机器是什么配置？32G 内存+ 8 核 CPU + 1T 磁盘，但是分配给 redis 进程的是 10g 内存，一般线上生产环境，redis 的内存尽量不要超过 10g，超过 10g 可能会有问题。
+
+5 台机器对外提供读写，一共有 50g 内存。
+
+因为每个主实例都挂了一个从实例，所以是高可用的，任何一个主实例宕机，都会自动故障迁移，redis 从实例会自动变成主实例继续提供读写服务。
+
+你往内存里写的是什么数据？每条数据的大小是多少？商品数据，每条数据是 10kb。100 条数据是 1mb，10 万条数据是 1g。常驻内存的是 200 万条商品数据，占用内存是 20g，
+仅仅不到总内存的 50%。目前高峰期每秒就是 3500 左右的请求量。
+
+
+
+
+
+
+
+
+序列化，反序列化:
+把对象转换为字节序列的过程称为对象的序列化。
+把字节序列恢复为对象的过程称为对象的反序列化。
+
+对象的序列化主要有两种用途：
+1 把对象的字节序列永久地保存到硬盘上，通常存放在一个文件中；
+2 在网络上传送对象的字节序列。
+
+使用：实现Serializable接口，定义s​e​r​i​a​l​V​e​r​s​i​o​n​U​I​D​:​ ​​序​列​化​的​版​本​号，作用：序列化，反序列化才会认识它，否则新加属性再编译，那自动gen出来的会报错
+
+各框架以及注解
+
+
+PEPL-PGS:
+基于HttpClient，先构造post/get (post = new HttpPost(url)),构造请求头，构建消息实体(json放里面)，
+发送Json格式的数据请求 "Content-Type", "application/json"  post.setEntity(entity);
+final JSONObject json = JSONObject.fromObject(responseContent);
+imageId = json.getString("id");
+直接构建即直接实例化一个JSONObject对象，而后调用其put()方法，将数据写入
+基本类型的解析直接调用JSONObject对象的getXxx(key)方法(构建一个商品发过去)
+接受，解析，JSONObject.getString,getJSONArray()->colorList.getJSONObject(getJSONArray().size())
+
+
+ES查询的两种方式：
+"query":{
+    "match_all": {
+    }
+  }
+{
+  "query":{
+    "match":{
+      "name":"wang"
+    }
+  }
+}
+ES默认分词搜索，导致模糊查询，出现的结果不够精确
+{
+  "query":{
+    "match_phrase": {
+      "title": {
+        "query": "中国世界",
+        "slop":2
+      }
+    }
+  }
+}
+中国*世界  
+
+ "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+          "name": "wangfei"
+          }
+        }
+      ]
+    }
+  }
+
+"query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+          "name": "wangjifei"
+        }
+        },{
+          "match": {
+            "age": 27
+          }
+        }
+      ]
+    }
+  }
+分页：  "from": 0,"size": 1
+
+
+activeMQ是基于主从架构的，RocketMQ是分布式架构
+
+什么是activemq
+JMS1.1规范的，面向消息(MOM)的中间件，为应用程序提供消息通信
+activemq的作用以及原理
+Activemq 的作用就是系统之间进行通信。 当然可以使用其他方式进行系统间通信， 
+如果使用 Activemq 的话可以对系统之间的调用进行解耦， 实现系统间的异步通信。 
+原理就是生产者生产消息， 把消息发送给activemq。 
+Activemq 接收到消息， 然后查看有多少个消费者， 然后把消息转发给消费者， 此过程中生产者无需参与。 消费者接收到消息后做相应的处理和生产者没有任何关系
+
+activemq的几种通信方式
+(发布-订阅方式)
+发布/订阅方式用于多接收客户端的方式.作为发布订阅的方式，可能存在多个接收客户端，并且接收端客户端与发送客户端存在时间上的依赖。
+一个接收端只能接收他创建以后发送客户端发送的信息。作为subscriber ,在接收消息时有两种方法，destination的receive方法，和实现message listener 接口的onMessage 方法
+
+3.2 p2p(point-to-point)(点对点)队列
+通信双方独享这一条通信链路的。一方发送消息，另外一方接收。
+相互通信的双方是通过一个类似于队列的方式来进行交流。
+和前面pub-sub的区别在于一个topic有一个发送者和多个接收者，而在p2p里一个queue只有一个发送者和一个接收者。
+
+publish(发布)-subscribe(订阅)方式的处理
+发布订阅模式的通信方式， 默认情况下只通知一次。 
+这种场景只适用于对消息送达率要求不高的情况。 如果要求消息必须送达不可以丢失的话， 需要配置持久订阅。 
+每个订阅端定义一个 id，  <property name="clientId" 在订阅是向 activemq 注册。 
+发布消息 <property name="subscriptionDurable" value="true"/>和接收消息时需要配置发送模式为持久化template.setDeliveryMode(DeliveryMode.PERSISTENT);
+此时如果客户端接收不到消息， 消息会持久化到服务端(就是硬盘上)， 直到客户端正常接收后为止。
+
+4.2p - p(点对点)方式的处理
+点对点模式的话， 如果消息发送不成功此消息默认会保存到 activemq 服务端直到有消费者将其消费， 所以此时消息是不会丢失的。
+
+https://www.cnblogs.com/wangjintao-0623/p/9727248.html
+
+如何解决消息重复问题:
+大致流程如下:
+        业务端的表记录已经处理消息的id,每次一个消息进来之前先判断该消息是否执行过,如果执行过就放弃,如果没有执行就开始执行消息,消息执行完成之后存入这个消息的id
+
+Activemq 宕机解决方案:失效转移（也叫故障转移，FailOver）的策略,Failover:(uri1.....n)
+如果某个ActiveMQ客户端发现uri1地址失效了，它会立即转向uri地址列表中其他可以连接的消息服务器进行重连，以保证继续正常工作
+实际上，会把消息存储一份在DB，当服务器恢复时再进行发送。
+
+多线程：
+什么是线程？操作系统能够进行运算调度的最小单位
+继承Tread类，实现Runnable与Callable接口(Thread.start())：
+它们的主要区别是Callable的 call() 方法可以返回值和抛出异常，而Runnable的run()方法没有这些功能。Callable可以返回装载有计算结果的Future对象。
+Callable接口支持返回执行结果，此时需要调用FutureTask.get()方法实现，此方法会阻塞主线程直到获取‘将来’结果；当不调用此方法时，主线程不会阻塞！
+FutureTask<String> task = new FutureTask<>(实现接口的类，重写call方法);
+new Thread(task).start();
+
+什么是FutureTask？
+可以对调用了Callable和Runnable的对象进行包装，由于FutureTask也是调用了Runnable接口所以它可以提交给Executor来执行
+
+Q：sleep()和wait()的区别？
+
+sleep()方法导致了程序暂停执行指定的时间，让出cpu该其他线程，但是他的监控状态依然保持者，当指定的时间到了又会自动恢复运行状态。
+
+而当调用wait()方法的时候，线程会放弃对象锁，进入等待此对象的等待锁定池，只有针对此对象调用notify()方法后本线程才进入对象锁定池准备
+
+sleep() 和 wait() 的区别就是 调用sleep方法的线程不会释放对象锁，而调用wait() 方法会释放对象锁
+
+
+Thread 类中的start() 和 run() 方法有什么区别？
+start()方法被用来启动新创建的线程，而且start()内部 调用了run()方法，这和直接调用run()方法的效果不一样。
+当你调用run()方法的时候，只会是在原来的线程中调用，没有新的线程启 动，start()方法才会启动新线程。
+
+什么是线程安全：
+线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量 的值也和预期的是一样的，就是线程安全的。
+
+Java中如何停止一个线程？
+Java提供了很丰富的API但没有为停止线程提供API。
+JDK 1.0本来有一些像stop(), suspend() 和 resume()的控制方法但是由于潜在的死锁威胁因此在后续的JDK版本中他们被弃用了。
+
+一个线程运行时发生异常会怎样？
+简单的说，如果异常没有被捕获该线程将会停止执行。
+JVM会使用Thread.getUncaughtExceptionHandler()来。如果不捕获异常，那最终是JVM处理的
+
+如何在两个线程间共享数据？
+
+多线程共享数据的方式：
+1，如果每个线程执行的代码相同，可以使用同一个Runnable对象，这个Runnable对象中有那个共享数据，例如，卖票系统就可以这么做。
+2，如果每个线程执行的代码不同，这时候需要用不同的Runnable对象，例如，设计4个线程。其中两个线程每次对j增加1，另外两个线程对j每次减1，银行存取款
+
+有两种方法来解决此类问题：
+
+将共享数据封装成另外一个对象，然后将这个对象逐一传递给各个Runnable对象，每个线程对共享数据的操作方法也分配到那个对象身上完成，这样容易实现针对数据进行各个操作的互斥和通信
+将Runnable对象作为一个类的内部类，共享数据作为这个类的成员变量，每个线程对共享数据的操作方法也封装在外部类，以便实现对数据的各个操作的同步和互斥，
+作为内部类的各个Runnable对象调用外部类的这些方法
+https://www.cnblogs.com/tongxuping/p/10474015.html
+
+
+线程池的使用：
+--newFixedThreadPool
+com.core.cbx.action.BatchAction.process(T)
+https://www.cnblogs.com/williamjie/p/9485723.html
+
+先说两个概念：锁池和等待池
+锁池:假设线程A已经拥有了某个对象(注意:不是类)的锁,而其它的线程想要调用这个对象的某个synchronized方法
+由于这些线程在进入对象的synchronized方法之前必须先获得该对象的锁的拥有权，但是该对象的锁目前正被线程A拥有，所以这些线程就进入了该对象的锁池中。
+等待池:假设一个线程A调用了某个对象的wait()方法，线程A就会释放该对象的锁后，进入到了该对象的等待池中
+
+然后再来说notify和notifyAll的区别
+
+如果线程调用了对象的 wait()方法，那么线程便会处于该对象的等待池中，等待池中的线程不会去竞争该对象的锁。
+当有线程调用了对象的 notifyAll()方法（唤醒所有 wait 线程）或 notify()方法（只随机唤醒一个 wait 线程），被唤醒的的线程便会进入该对象的锁池中，锁池中的线程会去竞争该对象锁。
+也就是说，调用了notify后只要一个线程会由等待池进入锁池，而notifyAll会将该对象等待池内的所有线程移动到锁池中，等待锁竞争
+优先级高的线程竞争到对象锁的概率大，假若某线程没有竞争到该对象锁，它还会留在锁池中，唯有线程再次调用 wait()方法，它才会重新回到等待池中。
+而竞争到对象锁的线程则继续往下执行，直到执行完了 synchronized 代码块，它会释放掉该对象锁，这时锁池中的线程会继续竞争该对象锁。
+
+
+阻塞指的是暂停一个线程的执行以等待某个条件发生（如某资源就绪）
+
+（1）线程睡眠：Thread.sleep (long millis)方法，使线程转到阻塞状态。millis参数设定睡眠的时间，以毫秒为单位。当睡眠结束后，就转为就绪（Runnable）状态。sleep()平台移植性好。
+
+（2）线程等待：Object类中的wait()方法，导致当前的线程等待，直到其他线程调用此对象的 notify() 唤醒方法。这个两个唤醒方法也是Object类中的方法，行为等价于调用 wait() 一样。wait() 和 notify() 方法：两个方法配套使用，wait() 使得线程进入阻塞状态，它有两种形式，一种允许 指定以毫秒为单位的一段时间作为参数，另一种没有参数，前者当对应的 notify() 被调用或者超出指定时间时线程重新进入可执行状态，后者则必须对应的 notify() 被调用.
+
+（3）线程礼让，Thread.yield() 方法，暂停当前正在执行的线程对象，把执行机会让给相同或者更高优先级的线程。yield() 使得线程放弃当前分得的 CPU 时间，但是不使线程阻塞，即线程仍处于可执行状态，随时可能再次分得 CPU 时间。调用 yield() 的效果等价于调度程序认为该线程已执行了足够的时间从而转到另一个线程.
+
+（4）线程自闭，join()方法，等待其他线程终止。在当前线程中调用另一个线程的join()方法，则当前线程转入阻塞状态，直到另一个进程运行结束，当前线程再由阻塞转为就绪状态。
+
+（5）suspend() 和 resume() 方法：两个方法配套使用，suspend()使得线程进入阻塞状态，并且不会自动恢复，必须其对应的resume() 被调用，才能使得线程重新进入可执行状态。典型地，suspend() 和 resume() 被用在等待另一个线程产生的结果的情形：测试发现结果还没有产生后，让线程阻塞，另一个线程产生了结果后，调用 resume() 使其恢复。Thread中suspend()和resume()两个方法在JDK1.5中已经废除，不再介绍。因为有死锁倾向。
+
+线程从创建->运行->阻塞->运行->死亡的全过程：
+
+
+
+
+三、常用线程名词解释
+
+主线程：JVM调用程序main()所产生的线程。
+
+当前线程：这个是容易混淆的概念。一般指通过Thread.currentThread()来获取的进程。
+
+后台线程：指为其他线程提供服务的线程，也称为守护线程。JVM的垃圾回收线程就是一个后台线程。用户线程和守护线程的区别在于，是否等待主线程依赖于主线程结束而结束
+
+
+Java中interrupted 和 isInterruptedd方法的区别？
+interrupted() 和 isInterrupted()的主要区别是前者会将中断状态清除而后者不会
+
+为什么wait和notify方法要在同步块中调用？
+主要是因为Java API强制要求这样做，如果你不这么做，你的代码会抛出IllegalMonitorStateException异常
+
+Java中堆和栈有什么不同？
+为什么把这个问题归类在多线程和并发面试题里？因为栈是一块和线程紧密相关的内存区域。每个线程都有自己的栈内存，用于存储本地变量，方法参数和栈 调用，
+一个线程中存储的变量对其它线程是不可见的。而堆是所有线程共享的一片公用内存区域。对象都在堆里创建
+
+
+什么是线程池？ 为什么要使用它？
+创建线程要花费昂贵的资源和时间，如果任务来了才创建线程那么响应时间会变长，而且一个进程能创建的线程数有限。
+为了避免这些问题，在程序启动的时候就创建若干线程来响应处理，它们被称为线程池，里面的线程叫工作线程。
+Executor框架让你可以创建不同的线程池。
+比如单线程池，每次处理一个任务；数目固定的线程池或者是缓存线程池（一个适合很多生存期短 的任务的程序的可扩展线程池）。
+
+CBX线程池的使用：
+--newFixedThreadPool
+com.core.cbx.action.BatchAction.process(T)
+
+
+
+Java多线程中的死锁
+死锁是指两个或两个以上的进程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去。这是一个严重的问题，
+因为死锁会让你的程序挂起无法完成任务，死锁的发生必须满足以下四个条件：
+
+互斥条件：一个资源每次只能被一个进程使用。
+
+请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。
+
+不剥夺条件：进程已获得的资源，在末使用完之前，不能强行剥夺。
+
+循环等待条件：若干进程之间形成一种头尾相接的循环等待资源关系。
+
+避免死锁最简单的方法就是阻止循环等待条件，将系统中所有的资源设置标志位、排序，规定所有的进程申请资源必须以一定的顺序（升序或降序）做操作来避免死锁。
+
+死锁简单例子
+https://blog.csdn.net/qq_38153992/article/details/90726454
+
+怎么检测一个线程是否拥有锁？
+在java.lang.Thread中有一个方法叫holdsLock()，它返回true如果当且仅当当前线程拥有某个具体对象的锁。
+
+JVM中哪个参数是用来控制线程的栈堆栈小的
+这个问题很简单， -Xss参数用来控制线程的堆栈大小
+
+
+有三个线程T1，T2，T3，怎么确保它们按顺序执行？
+1.先启动最后一个(T3调用T2,T2调用T1)https://blog.csdn.net/weixin_37817685/article/details/78728877
+2，可以用线程类的join()方法在一个线程中启动另一个线程,另一个线程完成（https://www.cnblogs.com/loytime/p/11721141.html）
+
+Thread类中的yield方法有什么作用？
+Yield方法可以暂停当前正在执行的线程对象，让其它有相同优先级的线程执行。
+它是一个静态方法而且只保证当前线程放弃CPU占用而不能保证使其它线程一定能占用CPU，执行yield()的线程有可能在进入到暂停状态后马上又被执行。
+
+如果你提交任务时，线程池队列已满。会时发会生什么？
+这个问题问得很狡猾，许多程序员会认为该任务会阻塞直到线程池队列有空位。
+事实上如果一个任务不能被调度执行那么ThreadPoolExecutor’s submit()方法将会抛出一个RejectedExecutionException异常。
+
+ Java线程池中submit() 和 execute()方法有什么区别？
+两个方法都可以向线程池提交任务，execute()方法的返回类型是void，它定义在Executor接口中, 而submit()方法可以返回持有计算结果的Future对象，
+它定义在ExecutorService接口中，它扩展了Executor接口，其它线 程池类像ThreadPoolExecutor和ScheduledThreadPoolExecutor都有这些方法。
+
+什么是阻塞式方法？
+阻塞式方法是指程序会一直等待该方法完成期间不做其他事情，ServerSocket的accept()方法就是一直等待客户端连接。
+这里的阻塞是指调用结果返回之前，当前线程会被挂起，直到得到结果之后才会返回。此外，还有异步和非阻塞式方法在任务完成前就返回。
+
+单例模式的双检锁是什么？
+https://blog.csdn.net/a347911/article/details/53321803
+
+在Java里面没有办法强制启动一个线程
+
+
+常见设计模式：
+https://blog.csdn.net/a347911/article/details/53321803
+
+1、对象锁
+当一个对象中有同步方法或者同步块，线程调用此对象进入该同步区域时，必须获得对象锁。如果此对象的对象锁被其他调用者占用，
+则进入阻塞队列，等待此锁被释放（同步块正常返回或者抛异常终止，由JVM自动释放对象锁）。
+注意，方法锁也是一种对象锁。当一个线程访问一个带synchronized方法时，由于对象锁的存在，所有加synchronized的方法都不能被访问（前提是在多个线程调用的是同一个对象实例中的方法）。
+
+类锁
+一个class其中的静态方法和静态变量在内存中只会加载和初始化一份，所以，一旦一个静态的方法被申明为synchronized，此类的所有的实例化对象在调用该方法时，共用同一把锁，称之为类锁。
+
+synchronized位置的区别
+在对象锁或者类锁中，synchronized的位置就是锁的大小，写在类名上的synchronized比写在代码块上明显颗粒度要大很多。效率也会更低。
+
+
+数据库:
+
+https://blog.csdn.net/wangyuchun_799/article/details/49097263
+
+总结一下：
+A INNER JOIN B ON……：内联操作，将符合ON条件的A表和B表结果均搜索出来，然后合并为一个结果集。
+A LEFT JOIN B ON……：左联操作，左联顾名思义是，将符合ON条件的B表结果搜索出来，
+然后左联到A表上，然后将合并后的A表输出。
+————————————————
+
+PostgreSQL 与 MySQL：
+MySQL 的各种 text 字段有不同的限制, 要手动区分 small text, middle text, large text... Pg 没有这个限制, text 能支持各种大小.
+为了实现文档数据库的功能, 设计了 jsonb 的存储结构，它可以存储或者读取json
+DDL能放入事务中，删表，TRUNCATE，创建函数，索引，都可以放在事务里原子生效，或者回滚。
+PGSQL：fdw扩展可以以外部表的方式在本地访问远程PG库里面的表。
+简单的说跨数据库访问
+create extension postgres_fdw ;
+postgres=# create server server_pgsql_fdw foreign data wrapper postgres_fdw options(host '192.168.17.35',port '5432',dbname 'postgres');
+CREATE SERVER
+
+postgres=# create user mapping for public server server_pgsql_fdw options(user 'postgres',password '123456');                          
+CREATE USER MAPPING
+注意： create user mapping是将server与本地的用户连接起来。
+创建外部表
+postgres=# create foreign table foreign_goods(id integer,name character varying)server server_pgsql_fdw options(schema_name 'public',table_name 'goods');
+CREATE FOREIGN TABLE
+
+
+MySQL部分:行锁，表锁，乐观锁，悲观锁
+https://www.cnblogs.com/mengzisama/p/13363541.html
+
+https://blog.csdn.net/m0_45270667/article/details/108950184
+
+能说下myisam 和 innodb的区别吗？
+myisam不支持事务和行级锁，myisam不支持外键，并且索引和数据是分开存储的。
+innodb与之相反
+
+说下mysql的索引有哪些吧，聚簇和非聚簇索引又是什么？
+索引按照数据结构来说主要包含B+树和Hash索引。
+B+树是左小右大的顺序存储结构，节点只包含id索引列，而叶子节点包含索引列和数据
+这种数据和索引在一起存储的索引方式叫做聚簇索引，一张表只能有一个聚簇索引。(https://blog.csdn.net/m0_45270667/article/details/108950184)
+InnoDB非聚簇索引(二级索引)保存的是主键id值，这一点和myisam保存的是数据地址是不同的。
+
+锁的类型有哪些呢
+mysql锁分为共享锁和排他锁，也叫做读锁和写锁。
+
+读锁是共享的，可以通过lock in share mode实现，这时候只能读不能写。
+
+写锁是排他的，它会阻塞其他的写锁和读锁。从颗粒度来区分，可以分为表锁和行锁两种。
+
+表锁会锁定整张表并且阻塞其他用户对该表的所有读写操作，比如alter修改表结构的时候会锁表。
+
+行锁又可以分为乐观锁和悲观锁，悲观锁可以通过for update实现，乐观锁则通过版本号实现。
+
+
+对于UPDATE，DELETE，INSERT语句，InnoDB会自动给涉及到的数据集加排它锁。
+MyISAM在执行SELECT之前，会自动给涉及到的所有表加读锁，在执行更新操作（UPDATE，DELETE，INSERT）前，会自动给涉及到的表加写锁，这个过程不需要用户干预。
+
+
+从锁的粒度，可以分为两大类：
+
+表锁：开销小，加锁快，不会出现死锁，锁定力度大，发生锁冲突的概率高，并发度低。
+行锁：开销大，加锁慢，会出现死锁，锁定力度小，发生锁冲突的概率低，并发读高。
+不同的存储引擎支持的锁力度是不一样的。
+
+InnoDB支持表锁和行锁。
+MyISAM只支持表锁。
+InnoDB只有通过索引条件检索数据才使用行级锁，否则，InnoDB将使用表锁。也就是说，InnoDB的行锁是基于索引的。
+
+表锁下又分为两种模式：
+
+表读锁（Table Read Lock）
+表写锁（Table Write Lock）
+从下图可以清晰看到，在表读锁和表写锁的环境下：读读不阻塞，读写阻塞，写写阻塞！ 
+
+读读不阻塞：当前用户在读数据，其他的用户也在读数据，不会加锁。 
+
+读写阻塞：当前用户在读数据，其他的用户不能修改当前用户读的数据，会加锁！ 
+
+写写阻塞：当前用户在修改数据，其他的用户不能修改当前用户正在修改的数据，会加锁！ 
+
+
+MySQL的事务隔离级别
+在这之前，先了解一下MySQL的事务隔离级别以及并发带来的问题。
+
+事务的并发问题
+
+1、脏读：事务A读取了事务B更新的数据，然后B回滚操作，那么A读取到的数据是脏数据
+
+2、不可重复读：多次读取同一数据时，结果 不一致。
+
+3、幻读：多次读取同一数据时结果数量不一致。
+
+小结：不可重复读和幻读很容易混淆，不可重复读侧重于修改，幻读侧重于新增或删除。解决不可重复读的问题只需行锁，解决幻读需要锁表
+
+MySQL隔离级别:
+读未提交：会导致脏读，导致不可重复读，导致幻读
+读已提交: 不会脏读，会导致不可重复读，导致幻读
+可重复读: 不会脏读，不会导致不可重复读，导致幻读
+串行:都不会，但性能差
+
+
+MySQL的默认隔离级别是可重复读
+
+隔离级别越高，越能保证数据的完整性和一致性，但是对并发性能的影响也越大，鱼和熊掌不可兼得啊。
+对于多数应用程序，可以优先考虑把数据库系统的隔离级别设为Read Committed，它能够避免脏读取，而且具有较好的并发性能。
+尽管它会导致不可重复读、幻读这些并发问题，在可能出现这类问题的个别场合，可以由应用程序采用悲观锁或乐观锁来控制。
+
+set session transaction isolation level xxxx;
+
+乐观锁和悲观锁
+无论是Read committed还是Repeatable read隔离级别，都是为了解决读写冲突的问题。
+
+单纯在Repeatable read隔离级别下我们来考虑一个问题：
+
+
+此时，用户李四的操作就丢失掉了
+
+丢失更新：一个事务的更新覆盖了其它事务的更新结果。
+
+解决的方法：
+
+使用Serializable隔离级别，事务是串行执行的！
+乐观锁
+悲观锁
+乐观锁是一种思想，具体实现是，表中有一个版本字段，第一次读的时候，获取到这个字段。处理完业务逻辑开始更新的时候，
+需要再次查看该字段的值是否和第一次的一样。如果一样更新，反之拒绝。之所以叫乐观，因为这个模式没有从数据库加锁，等到更新的时候再判断是否可以更新。
+
+悲观锁是数据库层面加锁，都会阻塞去等待锁。
+
+所以，按照上面的例子。我们使用悲观锁的话其实很简单(手动加行锁就行了)：
+
+select * from xxxx for update
+在select 语句后边加了 for update相当于加了排它锁(写锁)，加了写锁以后，其他的事务就不能对它修改了！需要等待当前事务修改完之后才可以修改。
+也就是说，如果张三使用select … for update，李四就无法对该条记录修改了。
+
+
+2.乐观锁
+
+乐观锁不是数据库层面上的锁，不需要自己手动去加的锁。一般我们添加一个版本字段来实现：
+
+具体过程是这样的：
+
+张三select * from table —>会查询出记录出来，同时会有一个version字段 
+
+
+
+李四select * from table —>会查询出记录出来，同时会有一个version字段 
+
+
+李四对这条记录做修改
+
+李四对这条记录做修改
+
+update A set age=30,version=version+1 where name=#{name} and version=#{version}
+判断之前查询到的version与现在的数据的version进行比较，同时会更新version字段。
+
+
+五、死锁
+
+并发的问题就少不了死锁，在MySQL中同样会存在死锁的问题。
+
+但一般来说MySQL通过回滚帮我们解决了不少死锁的问题了，但死锁是无法完全避免的，可以通过以下的经验参考，来尽可能少遇到死锁：
+
+（1）以固定的顺序访问表和行。比如对两个job批量更新的情形，简单方法是对id列表先排序，后执行，这样就避免了交叉等待锁的情形；将两个事务的sql顺序调整为一致，也能避免死锁。
+
+（2）大事务拆小。大事务更倾向于死锁，如果业务允许，将大事务拆小。
+
+（3）在同一个事务中，尽可能做到一次锁定所需要的所有资源，减少死锁概率。
+
+（4）降低隔离级别。如果业务允许，将隔离级别调低也是较好的选择，比如将隔离级别从RR调整为RC，可以避免掉很多因为gap锁造成的死锁。
+
+（5）为表添加合理的索引。可以看到如果不走索引将会为表的每一行记录添加上锁，死锁的概率大大增大。
+
+
+六、总结
+
+上面说了一大堆关于MySQL数据库锁的东西，现在来简单总结一下。
+
+表锁其实我们程序员是很少关心它的：
+
+在MyISAM存储引擎中，当执行SQL语句的时候是自动加表锁的。
+在InnoDB存储引擎中，如果没有使用索引，表锁也是自动加的。
+现在我们大多数使用MySQL都是使用InnoDB，InnoDB支持行锁：
+
+共享锁–读锁–S锁
+排它锁–写锁–X锁
+在默认的情况下，select是不加任何行锁的~事务可以通过以下语句显示给记录集加共享锁或排他锁。
+
+// 共享锁（S）
+SELECT * FROM table_name WHERE ... LOCK IN SHARE MODE。
+// 排他锁（X)
+SELECT * FROM table_name WHERE ... FOR UPDATE。
+
+
+InnoDB 如何实现行锁？
+行级锁是 MySQL 中粒度最小的一种锁，他能大大减少数据库操作的冲突。
+
+INNODB 的行级锁有共享锁（S LOCK）和排他锁（X LOCK）两种。共享锁允许事物读一行记录，不允许任何线程对该行记录进行修改。
+排他锁允许当前事物删除或更新一行记录，其他线程不能操作该记录。
+
+共享锁：SELECT ... LOCK IN SHARE MODE，MySQL 会对查询结果集中每行都添加共享锁，前提是当前线程没有对该结果集中的任何行使用排他锁，否则申请会阻塞。
+
+排他锁：select * from t where id=1 for update，其中 id 字段必须有索引，MySQL 会对查询结果集中每行都添加排他锁，在事物操作中，任何对记录的更新与删除操作会自动加上排他锁。
+前提是当前没有线程对该结果集中的任何行使用排他锁或共享锁，否则申请会阻塞。
+
+表锁的语法是 lock tables t read/write。
+
+可以用 unlock tables 主动释放锁，也可以在客户端断开的时候自动释放。lock tables 语法除了会限制别的线程的读写外，也限定了本线程接下来的操作对象。
+
+
+如何设置数据库为全局只读锁？
+使用命令 flush tables with read lock（简称 FTWRL）就可以实现设置数据库为全局只读锁。
+
+除了 FTWRL 可以设置数据库只读外，还有什么别的方法？
+
+除了使用 FTWRL 外，还可以使用命令 set global readonly=true 设置数据库为只读。
+
+FTWRL 和 set global readonly=true 有什么区别？
+
+FTWRL 和 set global readonly=true 都是设置整个数据库为只读状态，但他们最大的区别就是，当执行 FTWRL 的客户端断开之后，整个数据库会取消只读，
+而 set global readonly=true 会一直让数据处于只读状态。
+
+
+说说mysql主从同步怎么做的吧？
+首先先了解mysql主从同步的原理
+master提交完事务后，写入binlog
+slave连接到master，获取binlog
+master创建dump线程，推送binglog到slave
+slave启动一个IO线程读取同步过来的master的binlog，记录到relay log中继日志中
+slave再开启一个sql线程读取relay log事件并在slave执行，完成同步
+slave记录自己的binglog
+
+
+JVM:
+什么情况下会发生栈内存溢出。
+
+栈是存储局部变量。局部变量包含基本数据类型，对象引用类型
+将抛出StackOverflowError异常，方法递归调用产生这种结果。
+如那么Java虚拟机将抛出一个OutOfMemory 异常。(线程启动过多)参数 -Xss 去调整JVM栈的大小
+
+JVM内存为什么要分成新生代，老年代，持久代。新生代中为什么要分为Eden和Survivor。
+思路： 先讲一下JAVA堆，新生代的划分，再谈谈它们之间的转化，相互之间一些参数的配置（
+如： –XX:NewRatio，–XX:SurvivorRatio等），再解释为什么要这样划分，最好加一点自己的理解。
+
+
+内存区划分
+
+共享内存区 = 持久带 + 堆
+持久带 = 方法区 + 其他
+Java堆 = 老年代 + 新生代
+新生代 = Eden + S0 + S1
+
+
+为什么要分为Eden和Survivor?为什么要设置两个Survivor区？
+
+如果没有Survivor，Eden区每进行一次Minor GC（GC：垃圾收集器），存活的对象就会被送到老年代。
+老年代很快被填满，触发Major GC(GC：垃圾收集器).老年代的内存空间远大于新生代，进行一次Full GC消耗的时间比Minor GC长得多,所以需要分为Eden和Survivor。
+
+Survivor的存在意义，就是减少被送到老年代的对象，进而减少Full GC的发生，Survivor的预筛选保证，只有经历16次Minor GC还能在新生代中存活的对象，才会被送到老年代。
+设置两个Survivor区最大的好处就是解决了碎片化，刚刚新建的对象在Eden中，经历一次Minor GC，Eden中的存活对象就会被移动到第一块survivor space S0，Eden被清空；
+等Eden区再满了，就再触发一次Minor GC，Eden和S0中的存活对象又会被复制送入第二块survivor space S1
+（这个过程非常重要，因为这种复制算法保证了S1中来自S0和Eden两部分的存活对象占用连续的内存空间，避免了碎片化的发生）
+
+
+JVM中一次完整的GC流程是怎样的，对象如何晋升到老年代
+思路： 先描述一下Java堆内存划分，再解释Minor GC，Major GC，full GC，描述它们之间转化流程。
+
+我的答案：
+
+Java堆 = 老年代 + 新生代
+新生代 = Eden + S0 + S1
+当 Eden 区的空间满了， Java虚拟机会触发一次 Minor GC，以收集新生代的垃圾，存活下来的对象，则会转移到 Survivor区。
+大对象（需要大量连续内存空间的Java对象，如那种很长的字符串）直接进入老年态；
+如果对象在Eden出生，并经过第一次Minor GC后仍然存活，并且被Survivor容纳的话，年龄设为1，每熬过一次Minor GC，年龄+1，若年龄超过一定限制（15），
+则被晋升到老年态。即长期存活的对象进入老年态。
+老年代满了而无法容纳更多的对象，Minor GC 之后通常就会进行Full GC，Full GC 清理整个内存堆 – 包括年轻代和年老代。
+Major GC 发生在老年代的GC，清理老年区，经常会伴随至少一次Minor GC，比Minor GC慢10倍以上。
+
+看桌面的Doc：
+
+说一下类装载的执行过程？
+类装载分为以下 5 个步骤：
+
+· 加载：根据查找路径找到相应的 class 文件然后导入；
+
+· 检查：检查加载的 class 文件的正确性；
+
+· 准备：给类中的静态变量分配内存空间；
+
+· 解析：虚拟机将常量池中的符号引用替换成直接引用的过程。符号引用就理解为一个标示，而在直接引用直接指向内存中的地址；
+
+· 初始化：对静态变量和静态代码块执行初始化工作。
+
+java 中都有哪些引用类型？
+· 强引用：发生 gc 的时候不会被回收。
+
+· 软引用：有用但不是必须的对象，在发生内存溢出之前会被回收。
+
+· 弱引用：有用但不是必须的对象，在下一次GC时会被回收。
+
+· 虚引用（幽灵引用/幻影引用）：无法通过虚引用获得对象，用 PhantomReference 实现虚引用，虚引用的用途是在 gc 时返回一个通知。
+
+
+
+说一下 JVM 有哪些垃圾回收算法？
+· 标记-清除算法：标记无用对象，然后进行清除回收。缺点：效率不高，无法清除垃圾碎片。
+
+· 标记-整理算法：标记无用对象，让所有存活的对象都向一端移动，然后直接清除掉端边界以外的内存。
+
+· 复制算法：按照容量划分二个大小相等的内存区域，当一块用完的时候将活着的对象复制到另一块上，然后再把已使用的内存空间一次清理掉。缺点：内存使用率不高，只有原来的一半。
+
+· 分代算法：根据对象存活周期的不同将内存划分为几块，一般是新生代和老年代，新生代基本采用复制算法，老年代采用标记整理算法。
+
+说一下 JVM 调优的工具？
+JDK 自带了很多监控工具，都位于 JDK 的 bin 目录下，其中最常用的是 jconsole 和 jvisualvm 这两款视图监控工具。
+
+
+
+常用的 JVM 调优的参数都有哪些？
+XX比X的稳定性更差，并且版本更新不会进行通知和说明。
+
+-Xms
+s为strating，表示堆内存起始大小
+
+-Xmx
+x为max，表示最大的堆内存
+
+（一般来说-Xms和-Xmx的设置为相同大小，因为当heap自动扩容时，会发生内存抖动，影响程序的稳定性）
+
+-Xmn
+n为new，表示新生代大小
+
+（-Xss：规定了每个线程虚拟机栈（堆栈）的大小）
+
+-XX:SurvivorRator=8
+表示堆内存中新生代、老年代和永久代的比为8:1:1
+
+-XX:PretenureSizeThreshold=3145728
+表示当创建（new）的对象大于3M的时候直接进入老年代
+
+-XX:MaxTenuringThreshold=15
+表示当对象的存活的年龄（minor gc一次加1）大于多少时，进入老年代
+
+-XX:-DisableExplicirGC
+表示是否（+表示是，-表示否）打开GC日志
+
+
+Spring:
+入口类：ApplicationContext相关的实现类由他们初始化 BeanFactory、加载 Bean、注册 Bean 等等。
+
+应该站在高处看 ApplicationContext 了，ApplicationContext 继承自 BeanFactory，但是它不应该被理解为 BeanFactory 的实现类，
+而是说其内部持有一个实例化的 BeanFactory（DefaultListableBeanFactory）。以后所有的 BeanFactory 相关的操作其实是给这个实例来处理的。
+
+BeanFactory 是 Bean 容器，那么 Bean 又是什么呢？
+BeanDefinition 就是我们所说的 Spring 的 Bean，我们自己定义的各个 Bean 其实会转换成一个个 BeanDefinition 存在于 Spring 的 BeanFactory 中。
+
+所以，如果有人问你 Bean 是什么的时候，你要知道 Bean 在代码层面上是 BeanDefinition 的实例。
+
+BeanDefinition 中保存了我们的 Bean 信息，比如这个 Bean 指向的是哪个类、是否是单例的、是否懒加载、这个 Bean 依赖了哪些 Bean 等等。
+
+BeanDefinition 的覆盖问题大家也许会碰到，就是在配置文件中定义 bean 时使用了相同的 id 或 name，默认情况下，allowBeanDefinitionOverriding 属性为 null，
+如果在同一配置文件中重复了，会抛错，但是如果不是同一配置文件中，会发生覆盖。
+
+
+D:\面试必问系列
+
+Spring AOP:
+什么时候用JDK，什么时候用Cglib
+看有没有接口,还要看@EnableAspectJAutoProxy(proxyTargetClass = false, exposeProxy = true)
+proxyTargetClass = false使用JDK，即使有接口proxyTargetClass = true还是使用CGlib
+没有接口即使proxyTargetClass = false还是cglib
+
+术语的理解:
+Aspect:切面  里面存放通知Advice，存放切点
+join point:连接点   目标类里面的某个方法
+pointcut:切点 切点是所有连接点的集合(通常是一个空的方法)
+
+
+Mybatis原理：https://blog.csdn.net/weixin_43184769/article/details/91126687   https://www.cnblogs.com/qingchen521/p/10327440.html
+1，读取配置文件，解析生成一个configuration对象，放入到defaultSQLSessionFactory里面。
+2，defaultSQLSessionFactory.openSession获取SQLSession执行SQL的过程：一个会话使用一个SqlSession，并且在使用完毕后需要close。
+SqlSession是一个接口，它有两个实现类：DefaultSqlSession（默认）
+3,sqlsession中的api selectList....
+它底层的MappedStatement与Mapper配置文件中的一个select/update/insert/delete节点相对应。mapper中配置的标签都被封装到了此对象中，主要用途是描述一条SQL语句。
+
+<select id="getUser" resultType="user" >
+    select * from user where id=#{id}
+  </select>
+
+这样的一个select标签会在初始化配置文件时被解析封装成一个MappedStatement对象，然后存储在Configuration对象的mappedStatements属性中，mappedStatements 是一个HashMap，
+存储时key = 全限定类名 + 方法名，value = 对应的MappedStatement对象。
+
+4， executor.query()，把SQL放进prepareStatement，运行
+
+基于接口：前三步相同，在OpenSession之后就不同了：
+//这里不再调用SqlSession 的api，而是获得了接口对象，调用接口中的方法。
+UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+List<User> list = mapper.getUserByName("tom");
+
+Mapper接口我们都没有实现的方法却可以使用，是为什么呢？答案很简单 动态代理
+开始之前介绍一下MyBatis初始化时对接口的处理：MapperRegistry是Configuration中的一个属性，它内部维护一个HashMap用于存放mapper接口的工厂类，每个接口对应一个工厂类。mappers中可以配置接口的包路径，或者某个具体的接口类。
+
+<!-- 将包内的映射器接口实现全部注册为映射器 -->
+<mappers>
+  <mapper class="com.demo.mapper.UserMapper"/>
+  <package name="com.demo.mapper"/>
+</mappers>
+
+当解析mappers标签时，它会判断解析到的是mapper配置文件时，会再将对应配置文件中的增删改查标签一 一封装成MappedStatement对象，存入mappedStatements中。（上文介绍了）
+当判断解析到接口时，会创建此接口对应的MapperProxyFactory对象，存入HashMap中，key = 接口的字节码对象，value = 此接口对应的MapperProxyFactory对象。
+
+MapperRegistry //这个类中维护一个HashMap存放MapperProxyFactory
+
+正文：
+进入sqlSession.getMapper(UserMapper.class)中
+			
+			// 里面通过动态代理工厂生成示例。
+      return mapperProxyFactory.newInstance(sqlSession);
+在动态代理返回了示例后，我们就可以直接调用mapper类中的方法了，最终还是会调用SQLSession中的方法。
+
+
+(2021-04-28)
+
+
+mybatis缓存，存储过程怎么使用，debug一下CBX旧的UI Mybatis查询例子，看看原理
+https://www.cnblogs.com/dongying/p/4142476.html
+SqlSessionFactory 与 SqlSession.
+
+通过前面的章节对于mybatis 的介绍及使用，大家都能体会到SqlSession的重要性了吧，
+咱们都是通过SqlSession去执行sql语句（注意：是从表面看，实际的待会儿就会讲）。那么咱们就先看看是怎么获取SqlSession的
+首先，SqlSessionFactoryBuilder去读取mybatis的配置文件，然后build一个DefaultSqlSessionFactory。
+我们获取到SqlSessionFactory之后，就可以通过SqlSessionFactory去获取SqlSession对象。
+可以调用SqlSession中一系列的select...,  insert..., update..., delete...方法轻松自如的进行CRUD操作（然后最终都是prepareStatement.execute）
+
+
+写的接口和xml里的SQL怎么用的：
+在mybatis中，通过MapperProxy动态代理咱们的dao，也就是说，当咱们执行自己写的dao里面的方法的时候，其实是对应的mapperProxy在代理。那么，咱们就看看怎么获取MapperProxy对象吧：
+通过MapperProxyFactory，拿到了MapperProxy, 每个MapperProxy对应一个dao接口，MapperProxy触发invoke(),其实是匹配去选择到底执行sqlSession中的哪个方法(insert,delete,select)
+
+
+缓存是一般的ORM 框架都会提供的功能，目的就是提升查询的效率和减少数据库的压力。跟Hibernate 一样，MyBatis 也有一级缓存和二级缓存，并且预留了集成第三方缓存的接口。
+　MyBatis 跟缓存相关的类都在cache 包里面，其中有一个Cache 接口，只有一个默认的实现类 PerpetualCache，它是用HashMap 实现的。我们可以通过 以下类找到这个缓存的庐山真面目
+
+一级缓存（本地缓存）：
+　　一级缓存也叫本地缓存，MyBatis 的一级缓存是在会话（SqlSession）层面进行缓存的。MyBatis 的一级缓存是默认开启的，不需要任何的配置。
+所以缓存只可能放在Executor 里面维护——SimpleExecutor/ReuseExecutor/BatchExecutor 的父类BaseExecutor 的构造函数中持有了PerpetualCache。在同一个会话里面，多次执行相同的SQL 语句，会直接从内存取到缓存的结果，不会再发送SQL 到数据库。
+但是不同的会话里面，即使执行的SQL 一模一样（通过一个Mapper 的同一个方法的相同参数调用），也不能使用到一级缓存。
+
+MyBatis在开启一个数据库会话时，会 创建一个新的SqlSession对象，SqlSession对象中会有一个新的Executor对象，Executor对象中持有一个新的PerpetualCache对象；当会话结束时，SqlSession对象及其内部的Executor对象还有PerpetualCache对象也一并释放掉。
+如果SqlSession调用了close()方法，会释放掉一级缓存PerpetualCache对象，一级缓存将不可用；
+如果SqlSession调用了clearCache()，会清空PerpetualCache对象中的数据，但是该对象仍可使用；
+SqlSession中执行了任何一个update操作(update()、delete()、insert()) ，都会清空PerpetualCache对象的数据，但是该对象可以继续使用；
+
+二级缓存是用来解决一级缓存不能跨会话共享的问题的，范围是namespace 级别的，可以被多个SqlSession 共享（只要是同一个接口里面的相同方法，都可以共享），生命周期和应用同步。
+如果你的MyBatis使用了二级缓存，并且你的Mapper和select语句也配置使用了二级缓存，那么在执行select查询的时候，
+MyBatis会先从二级缓存中取输入，其次才是一级缓存，即MyBatis查询数据的顺序是：二级缓存   —> 一级缓存 —> 数据库。
+
+实际上MyBatis 用了一个装饰器的类来维护，就是CachingExecutor。如果启用了二级缓存，MyBatis 在创建Executor 对象的时候会对Executor 进行装饰。CachingExecutor 对于查询请求，
+会判断二级缓存是否有缓存结果，如果有就直接返回，如果没有委派交给真正的查询器Executor 实现类，比如SimpleExecutor 来执行查询，再走到一级缓存的流程。最后会把结果缓存起来，
+并且返回给用户。
+
+注：二级缓存是事务性的。这意味着，当 SqlSession 完成并提交时，或是完成并回滚，但没有执行 flushCache=true 的 insert/delete/update 语句时，缓存会获得更新。
+
+为什么增删改操作会清空缓存？在CachingExecutor 的update()方法里面会调用flushCacheIfRequired(ms)，isFlushCacheRequired 就是从标签里面渠道的flushCache 的值。而增删改操作的flushCache 属性默认为true。
+
+什么时候开启二级缓存？
+
+一级缓存默认是打开的，二级缓存需要配置才可以开启。那么我们必须思考一个问题，在什么情况下才有必要去开启二级缓存？
+
+因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。否则缓存就失去了意义。
+
+
+
+
+
+Spring MVC：控制器的实现方式，注解的底层，注解的原理
+
+Spring源码分析：CBX有没用过AOP?
+
+5，hibernate（JPA）缓存？cbx怎么使用缓存？
+https://blog.csdn.net/h356363/article/details/104705276
+
+　@Cacheable 注解在方法上，表示该方法的返回结果是可以缓存的。
+  @Cache放在entity类上 定义了二级缓存策略和缓存范围 (https://blog.csdn.net/w410589502/article/details/54603265)
+  @CachePut("users")//每次都会执行方法，并将结果存入指定的缓存中
+   @CacheEvict是用来标注在需要清除缓存元素的方法或类上的。
+	@Caching 有时候我们可能组合多个Cache注解使用；
+
+
+事务的特性怎么理解？cbx哪里用到事务？@transactional代码原理
+cbx旧的UI View里面怎么做到分页的？
+
+JVM基础：
+
+cbx 权限认证:
+spring security基于Filter过滤器:充分利用了Spring IoC，DI(控制反转Inversion of Control ,DI:Dependency Injection 依赖注入)和AOP(面向切面编程)功能
+SpringSecurity 是一个安全框架，那它提供了哪些安全措施呢?主要是三个方面，
+
+· 身份认证(你是谁?)
+
+· 权限校验(你能做什么?允许操作的范围)
+
+· 攻击防护(防止伪造身份)
+说说Security 流程
+
+1、 首先， 当用户登录时， 前端会把用户输入的用户名、 密码信息传输到后台， 后台用一个类对象将其封装起来，
+
+通常使用的是UsernamePasswordAuthenticationToken这个类。
+
+2、 再来， 到程序负责验证这个类对象。 验证方法是调用Service根据username从数据库中取用户信息到实体类的实例中，
+
+比较两者的密码， 如果密码正确就成功登陆， 同时把包含着用户的用户名、 密码、 所具有的权限等信息的类对象
+
+放到SecurityContextHolder(安全上下文容器， 类似Session) 中去。
+
+3、 其次， 在用户访问一个资源的时候， 需要先判断是否是受限资源。 如果是的话还要判断当前是否未登录，
+
+没有的话就跳到登录页面。
+
+4、 最后!如果用户已经登录， 并访问一个受限资源的时候， 程序要根据url去数据库中取出该资源所对应的
+
+所有可以访问的角色， 然后拿着当前用户的所有角色一一对比， 判断用户是否可以访问
+
+
+Spring Security 的重要性
+在web应用开发中，安全无疑是十分重要的，选择Spring Security来保护web应用是一个非常好的选择。Spring Security 是spring项目之中的一个安全模块，特别是在spring boot项目中，spring security已经默认集成和启动了。
+
+Spring Security 默认为自动开启的，可见其重要性。
+
+如果要关闭，需要在启动类加上，exclude ={SecurityAutoConfiguration} 的配置
+
+https://www.cnblogs.com/demingblog/p/10874753.html
+
+
+
+
+
+事务的特性怎么理解？cbx哪里用到事务？@transactional代码原理
+方法的权限: 必须是public的方法才可以使用该注解.
+@Transactional(transactionManager = RestEntityConfig.REST_TRANSACTION, readOnly = true)其实是解决脏读的方式之一
+https://blog.csdn.net/zxf1242652895/article/details/79443067
+默认情况下,事务遇到RuntimeException 时会回滚 . 遇到受检查的异常 是不会回滚的. 要想所有异常都回滚,要加上 @Transactional( rollbackFor={Exception.class,其它异常}) 
+https://blog.csdn.net/jiangyu1013/article/details/84397366
+https://blog.csdn.net/weixin_47082274/article/details/108123667
+@Transactional的实现原理
+该注解是通过JDBC的事务 + Spring的AOP动态代理来完成的.
+@Transactional 
+CBX 的事务管理是Spring JpaTransactionManager，
+
+@Transactional注解
+@Transactional 实质是使用了 JDBC 的事务来进行事务控制的
+@Transactional 基于 Spring 的动态代理的机制
+ 
+
+@Transactional 实现原理：
+https://www.cnblogs.com/xd502djj/p/10940627.html
+https://blog.csdn.net/jiangyu1013/article/details/84397366
+ 
+1) 事务开始时，通过AOP机制，生成一个代理connection对象，
+   并将其放入 DataSource 实例的某个与 DataSourceTransactionManager 相关的某处容器中。
+   在接下来的整个事务中，客户代码都应该使用该 connection 连接数据库，
+   执行所有数据库命令。
+   [不使用该 connection 连接数据库执行的数据库命令，在本事务回滚的时候得不到回滚]
+  （物理连接 connection 逻辑上新建一个会话session；
+   DataSource 与 TransactionManager 配置相同的数据源）
+ 
+2) 事务结束时，回滚在第1步骤中得到的代理 connection 对象上执行的数据库命令，
+   然后关闭该代理 connection 对象。
+  （事务结束后，回滚操作不会对已执行完毕的SQL操作命令起作用）
+Spring 关闭数据库中自动提交：在方法执行前关闭自动提交，方法执行完毕后再开启自动提交
+
+ spring 事务特性
+spring 所有的事务管理策略类都继承自 org.springframework.transaction.PlatformTransactionManager 接口
+
+(传播前提条件嵌套事务)
+事务传播行为：如果在开始当前事务之前，一个事务上下文已经存在，此时有若干选项可以指定一个事务性方法的执行行为
+
+1. TransactionDefinition.PROPAGATION_REQUIRED：
+   如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。这是默认值。
+
+2. TransactionDefinition.PROPAGATION_REQUIRES_NEW：
+   创建一个新的事务，如果当前存在事务，则把当前事务挂起。
+ 
+3. TransactionDefinition.PROPAGATION_SUPPORTS：
+   如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。
+ 
+4. TransactionDefinition.PROPAGATION_NOT_SUPPORTED：
+   以非事务方式运行，如果当前存在事务，则把当前事务挂起。
+ 
+5. TransactionDefinition.PROPAGATION_NEVER：
+   以非事务方式运行，如果当前存在事务，则抛出异常。
+ 
+6. TransactionDefinition.PROPAGATION_MANDATORY：
+   如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。
+ 
+7. TransactionDefinition.PROPAGATION_NESTED：
+   如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；
+   如果当前没有事务，则该取值等价于TransactionDefinition.PROPAGATION_REQUIRED。
+
+
+   
+spring事务：
+1，默认配置下spring只有当抛出异常为unchecked(Error或者RuntimeException的异常称为unchecked异常)才会回滚
+   
+异常:
+所有的类都是从Throwable继承而来，下一层则分为两个结构，Error和Exception。
+其中Error类层次描述了Java运行时系统的内部错误和资源耗尽错误，这种错误除了简单的报告给用户，并尽力阻止程序安全终止之外，一般也米有别的解决办法了。   
+Exception（异常）分两大类：运行时异常和非运行时异常(编译异常)。程序中应当尽可能去处理这些异常。
+      1.运行时异常：都是RuntimeException类及其子类异常，如NullPointerException(空指针异常)、IndexOutOfBoundsException(下标越界异常)等，这些异常是不检查异常，程序中可以选择捕获处理，也可以不处理。这些异常一般是由程序逻辑错误引起的，程序应该从逻辑角度尽可能避免这类异常的发生。运行时异常的特点是Java编译器不会检查它，也就是说，当程序中可能出现这类异常，即使没有用try-catch语句捕获它，也没有用throws子句声明抛出它，也会编译通过。
+      2.非运行时异常 （编译异常）：是RuntimeException以外的异常，类型上都属于Exception类及其子类。从程序语法角度讲是必须进行处理的异常，如果不处理，程序就不能编译通过。如IOException、SQLException等以及用户自定义的Exception异常，一般情况下不自定义检查异常。
+  1. 可查异常（编译器要求必须处置的异常）：正确的程序在运行中，很容易出现的、情理可容的异常状况。除了Exception中的RuntimeException及RuntimeException的子类以外，其他的Exception类及其子类(例如：IOException和ClassNotFoundException)都属于可查异常。这种异常的特点是Java编译器会检查它，也就是说，当程序中可能出现这类异常，要么用try-catch语句捕获它，要么用throws子句声明抛出它，否则编译不会通过。
+      2. 不可查异常(编译器不要求强制处置的异常):包括运行时异常（RuntimeException与其子类）和错误（Error）。RuntimeException表示编译器不会检查程序是否对RuntimeException作了处理，在程序中不必捕获RuntimException类型的异常，也不必在方法体声明抛出RuntimeException类。RuntimeException发生的时候，表示程序中出现了编程错误，所以应该找出错误修改程序，而不是去捕获RuntimeException。
+
+ 对于错误、运行时异常、可查异常，Java技术所要求的异常处理方式有所不同。
+      1. 错误：对于方法运行中可能出现的Error，当运行方法不欲捕捉时，Java允许该方法不做任何抛出声明。因为，大多数Error异常属于永远不能被允许发生的状况，也属于合理的应用程序不该捕捉的异常。
+      2. 运行时异常：由于运行时异常的不可查性，为了更合理、更容易地实现应用程序，Java规定，运行时异常将由Java运行时系统自动抛出，允许应用程序忽略运行时异常。
+      3. 可查异常：对于所有的可查异常，Java规定：一个方法必须捕捉，或者声明抛出方法之外。也就是说，当一个方法选择不捕捉可查异常时，它必须声明将抛出异常。
+
+        能够捕捉异常的方法，需要提供相符类型的异常处理器。所捕捉的异常，可能是由于自身语句所引发并抛出的异常，也可能是由某个调用的方法或者Java运行时 系统等抛出的异常。也就是说，一个方法所能捕捉的异常，一定是Java代码在某处所抛出的异常。简单地说，异常总是先被抛出，后被捕捉的。
+        异常抛出：任何Java代码都可以抛出异常，如：自己编写的代码、来自Java开发环境包中代码，或者Java运行时系统。无论是谁，都可以通过Java的throw语句抛出异常。从方法中抛出的任何异常都必须使用throws子句。
+        异常捕获：捕捉异常通过try-catch语句或者try-catch-finally语句实现。
+        总体来说，Java规定：对于可查异常必须捕捉、或者声明抛出。允许忽略不可查的RuntimeException和Error。
+Java常见异常
+      1. RuntimeException子类: ArrayIndexOutOfBoundsException  NullPointerException
+	
+
+
+
+1、什么是Spring Boot？
+Spring Boot是spring的脚手架，使用Spring Boot可以做到专注于Spring应用的开发，而无需过多关注XML的配置。
+Spring Boot使用“习惯优于配置”的理念，简单来说，它提供了一堆依赖打包，并已经按照使用习惯解决了依赖问题。
+使用Spring Boot可以不用或者只需要很少的Spring配置就可以让企业项目快速运行起来。
+
+Spring Boot的核心功能：
+可独立运行的Spring项目：Spring Boot可以以jar包的形式独立运行。
+内嵌的Servlet容器：Spring Boot可以选择内嵌Tomcat、Jetty或者Undertow，无须以war包形式部署项目。
+简化的Maven配置：Spring提供推荐的基础 POM 文件来简化Maven 配置。
+自动配置Spring：Spring Boot会根据项目依赖来自动配置Spring 框架，极大地减少项目要使用的配置。
+无代码生成和xml配置：Spring Boot不生成代码。完全不需要任何xml配置即可实现Spring的所有配置。
+
+Spring Boot有哪些特性
+这个问题就很容易被问到了，Spring Boot主要有两大特性，分别是：起步依赖和自动装配,接下来就仔细说一下：
+起步依赖:
+每一个Spring Boot项目都必须继承依赖：spring-boot-starter-parent，而点进这个依赖能看到，它又继承了spring-boot-dependencies依赖
+除了继承父依赖之外，我们的项目还需要引入spring-boot-starter-web依赖，它帮我们导入了web模块正常运行所依赖的组件，这些依赖的版本则由父项目进行管理。
+而这个里面也引用了tomcat的依赖，我们可以通过自动装配的tomcat端口启动项目。
+
+总结:
+在起步依赖上，spring boot帮我们管理了各个依赖的版本，使各个依赖不会出现版本冲突；
+另外，帮我们打包了各个依赖让我们不用再像之前那样自己导入一大堆的依赖，只要引入起步依赖的坐标就可以进行web开发了，同样体现了依赖传递的用。
+
+自动装配:
+自动装配也是spring boot的一大特性，新建spring boot项目之后，会发现在启动类上有个@SpringBootApplication注解，
+而springboot也是通过该注解去自动装配的，点进去@SpringBootApplication注解可看到如下内容
+可以看到，@SpringBootApplication注解可以算是由三个注解组成的，
+@SpringBootConfiguration(就等同于@Configuration注解，而@Configuration注解也很熟悉啦，使用注解@Configuration的类，就表示这个类是SpringBoot bean的创建的配置文件类)、
+@EnableAutoConfiguration、（扫描包下组件注册到容器）
+@ComponentScan(配置spring容器扫描路径的)
+
+Spring Boot配置文件的优先级
+配置文件可以以application开头，yml、yaml、properties结尾，加载顺序为yml -> yaml -> properties
+
+什么是 Spring Boot Stater ？
+启动器是一套方便的依赖描述符，它可以放在自己的程序中。你方便所需要的 Spring 和相关技术。
+
+例如，如果你想使用 Sping 和 JPA 访问数据库，只需要你的项目包含 spring-boot-starter-data-jpa 依赖项，你就可以完美进行
+又比如:spring-boot-starter-web
+
+
+创建一个 Spring Boot Project 的最简单的方法是什么？
+Spring Initializr
+
+手动设置一个 maven 项目
+
+这里有几个重要的步骤：
+
+在 Eclipse 中，使用文件 - 新建 Maven 项目来创建一个新项目
+添加依赖项。
+添加 maven 插件。
+添加 Spring Boot 应用程序类
+
+
+为什么我们需要 spring-boot-maven-plugin?
+spring-boot-maven-plugin 提供了一些像 jar 一样打包或者运行应用程序的命令。
+
+spring-boot:run 运行你的 SpringBooty 应用程序。
+spring-boot：repackage 重新打包你的 jar 包或者是 war 包使其可执行
+spring-boot：start 和 spring-boot：stop 管理 Spring Boot 应用程序的生命周期（也可以说是为了集成测试）。
+spring-boot:build-info 生成执行器可以使用的构造信息。
+
+
+RequestMapping 和 GetMapping 的不同之处在哪里？
+RequestMapping 具有类属性的，可以进行 GET,POST,PUT 或者其它的注释中具有的请求方法。
+GetMapping 是 GET 请求方法中的一个特例。它只是 ResquestMapping 的一个延伸，目的是为了提高清晰度。
+
+
+Tomcat的缺省端口（8080）是多少，怎么修改？
+
+1）找到Tomcat目录下的conf文件夹
+
+2）进入conf文件夹里面找到server.xml文件
+
+Tomcat有几种部署方式？
+
+1）直接把Web项目放在webapps下，Tomcat会自动将其部署
+
+2）在server.xml文件上配置<Context>节点，设置相关的属性即可
+
+3）通过Catalina来进行配置:进入到conf\Catalina\localhost文件下，创建一个xml文件，该文件的名字就是站点的名字。
+
+tomcat容器是如何创建servlet类实例？用到了什么原理？
+
+当容器启动时，会读取在webapps目录下所有的web应用中的web.xml文件，然后对xml文件进行解析，
+
+并读取servlet注册信息。然后，将每个应用中注册的servlet类都进行加载，并通过反射的方式实例化。
+
+（有时候也是在第一次请求时实例化）在servlet注册时加上如果为正数，则在一开始就实例化，
+
+如果不写或为负数，则第一次请求实例化。
+
+内存调优
+
+内存方式的设置是在catalina.sh中，调整一下JAVA_OPTS变量即可，因为后面的启动参数会把JAVA_OPTS作为JVM的启动参数来处理。 
+
+垃圾回收策略调优
+
+垃圾回收的设置也是在catalina.sh中，调整JAVA_OPTS变量。 
+具体设置如下： 
+JAVA_OPTS="$JAVA_OPTS -Xmx3550m -Xms3550m -Xss128k -XX:+UseParallelGC  -XX:MaxGCPauseMillis=100" 
+ 
+
+GIT常见面试题
+
+1. 列举工作中常用的几个git命令？
+新增文件的命令：git add file或者git add .
+提交文件的命令：git commit –m或者git commit –a
+查看工作区状况：git status –s
+拉取合并远程分支的操作：git fetch/git merge或者git pull
+查看提交记录命令：git reflog
+
+ 提交时发生冲突，你能解释冲突是如何产生的吗？你是如何解决的？
+开发过程中，我们都有自己的特性分支，所以冲突发生的并不多，但也碰到过。诸如公共类的公共方法，我和别人同时修改同一个文件，他提交后我再提交就会报冲突的错误。
+ 
+通过git stash命令，把工作区的修改提交到栈区，目的是保存工作区的修改；
+通过git pull命令，拉取远程分支上的代码并合并到本地分支，目的是消除冲突；
+通过git stash pop命令，把保存在栈区的修改部分合并到最新的工作空间中；
+
+能不能说一下git fetch和git pull命令之间的区别？
+简单来说：git fetch branch是把名为branch的远程分支拉取到本地；而git pull branch是在fetch的基础上，把branch分支与当前分支进行merge；因此pull = fetch + merge。
+————————————————
+
+influshDB:
+时间序列数据：从定义上来说，就是一串按时间维度索引的数据。
+时序数据库（TSDB）特点：
+持续高并发写入、无更新；
+数据压缩存储；
+低查询延时。
+
+，influxdb不需要像传统数据库一样创建各种表，其表的创建主要是通过第一次数据插入时自动创建，如下：
+insert mytest, server=serverA count=1,name=5 //自动创建表
+
+(https://blog.csdn.net/qq_40794973/article/details/98954975?utm_term=datajpa%E9%9D%A2%E8%AF%95spring&utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~sobaiduweb~default-4-98954975&spm=3001.4430)
+Spring Data JPA：
+Spring Data JPA 是 Spring 基于 ORM 框架、JPA 规范的基础上封装的一套JPA应用框架，可使开发者用极简的代码即可实现对数据库的访问和操作。它提供了包括增删改查等在内的常用功能。
+Spring Data JPA 极大简化了数据库访问层代码。 如何简化的呢？ 使用了 Spring Data JPA，我们的dao层中只需要写接口，就自动具有了增删改查、分页查询等方法
+JPA是一套规范，内部是有接口和抽象类组成的。hibernate是一套成熟的ORM框架，而且Hibernate实现了JPA规范，所以也可以称hibernate为JPA的一种实现方式，
+我们使用JPA的API编程，意味着站在更高的角度上看待问题（面向接口编程）
+
+们发现在自定义的CustomerDao中，并没有提供任何方法就可以使用其中的很多方法，那么这些方法究竟是怎么来的呢？
+答案很简单，对于我们自定义的Dao接口，由于继承了JpaRepository和JpaSpecificationExecutor，所以我们可以使用这两个接口的所有方法。
+在使用Spring Data JPA时，一般实现JpaRepository和JpaSpecificationExecutor接口，这样就可以使用这些接口中定义的方法，
+但是这些方法都只是一些声明，没有具体的实现方式，那么在 Spring Data JPA中它又是怎么实现的呢？
+Spring Data JPA的实现过程（Spring AOP）
+ 
+
+通过对客户案例，以debug断点调试的方式，通过分析Spring Data JPA的原来来分析程序的执行过程；我们以findOne方法为例进行分析
+
+断点执行到方法上时，我们可以发现注入的customerDao对象，本质上是通过JdkDynamicAopProxy生成的一个代理对象
+
+当程序执行的时候，会通过JdkDynamicAopProxy的invoke方法，对customerDao对象生成动态代理对象。根据对Spring Data JPA介绍而知，
+要想进行findOne查询方法，最终还是会出现JPA规范的API完成操作，那么这些底层代码存在于何处呢？答案很简单，
+都隐藏在通过JdkDynamicAopProxy生成的动态代理对象当中，而这个动态代理对象就是SimpleJpaRepository
+
+通过SimpleJpaRepository的源码分析，定位到了findOne方法，在此方法中，返回em.find()的返回结果，那么em又是什么呢？   
+
+带着问题继续查找em对象，我们发现em就是EntityManager对象，而他是JPA原生的实现方式，所以我们得到结论Spring Data JPA只是对标准JPA操作进行了进一步封装，简化了Dao层代码的开发 
+
+Spring Data JPA的查询方式
+3.1 使用Spring Data JPA中接口定义的方法进行查询
+在继承JpaRepository，和JpaRepository接口后,我们就可以使用接口中定义的方法进行查询
+
+使用JPQL的方式查询 
+使用Spring Data JPA提供的查询方法已经可以解决大部分的应用场景，但是对于某些业务来说，我们还需要灵活的构造查询条件，这时就可以使用@Query注解，结合JPQL的语句方式完成查询
+
+@Query 注解的使用非常简单，只需在方法上面标注该注解，同时提供一个JPQL查询语句即可,Spring Data JPA 同样也支持sql语句的查询
+
+
+方法命名规则查询
+顾名思义，方法命名规则查询就是根据方法的名字，就能创建查询；只需要按照Spring Data JPA提供的方法命名规则定义方法的名称，就可以完成查询工作；
+Spring Data JPA在程序执行的时候会根据方法名称进行解析，并自动生成查询语句进行查询
+
+按照Spring Data JPA 定义的规则，查询方法以findBy开头，涉及条件查询时，条件的属性用条件关键字连接，要注意的是：条件属性首字母需大写；
+框架在进行方法名解析时，会先把方法名多余的前缀截取掉，然后对剩下部分进行解析。
+
+spring Boot 默认集成事务，所以无须手动开启使用 @EnableTransactionManagement 注解，就可以用 @Transactional 注解进行事务管理。需要使用时，可以查具体的参数。
+
+持久层方法上继承 JpaRepository，对应实现类 SimpleJpaRepository 中包含 @Transactional(readOnly = true) 注解，因此默认持久层中的 CRUD 方法均添加了事务。
+申明式事务更常用的是在 service 层中的方法上，一般会调用多个 Repository 来完成一项业务逻辑，过程中可能会对多张数据表进行操作，出现异常一般需要级联回滚。
+一般操作，直接在 Serivce 层方法中添加 @Transactional 即可，默认使用数据的隔离级别，默认所有 Repository 方法加入 Service 层中的事务。
+@Transactional 注解中最核心的两个参数是 propagation 和 isolation。前者用于控制事务的传播行为，指定小事务加入大事务还是所有事务均单独运行等；
+后者用于控制事务的隔离级别，默认和 MySQL 保持一致，为不可重复读。我们也可以通过这个字段手动修改单个事务的隔离级别。
+同一个 service 层中的方法调用，如果添加了@Transactional会启动 hibernate 的一级缓存，相同的查询多次执行会进行 Session 层的缓存，否则，多次相同的查询作为事务独立执行，则无法缓存。
+如果你使用了关系注解，在懒加载的过程中一般都会遇到过 LazyInitializationException 这个问题，可通过添加 @Transactional，将 session 托管给 Spring Transaction 解决。
+只读事务的使用。可在 service 层中全局配置只读事务 @Transactional(readOnly =true)，对于具有读写的事务可在对应方法中覆盖即可。在只读事务无法进行写入操作，
+这样在事务提交前，hibernate 就会跳过 dirty check，并且 Spring 和 JDBC 会有多种的优化，使得查询更有效率。
+
+
+JPA 与 Hibernate
+在使用 Spring Data JPA 的时候，虽然底层是 Hibernate 实现的，但是我们在使用的过程中完全没有感觉，因为我们在使用 JPA 规范提供的 API 来操作数据库。
+
+对象生命周期
+用过 Mybatis 的都知道，它属于半自动的 ORM，仅仅是将 SQL 执行后的结果映射到具体的对象，虽然它也做了对查询结果的缓存，但是一旦数据查出来封装到实体类后，就和数据库无关了。但是 JPA 后端的 Hibernate 则不同，作为全自动的 ORM，它自己有一套比较复杂的机制，用于处理对象和数据库中的关系，两者直接会进行绑定。
+
+首先在 Hibernate 中，对象就不再是基本的 Java POJO 了，而是有四种状态。
+
+临时状态 (transient): 刚用 new 语句创建，还未被持久化的并且不在 Session 的缓存中的实体类。
+持久化状态 (persistent): 已被持久化，并且在 Session 缓存中的实体类。
+删除状态 (removed): 不在 Session 缓存中，而且 Session 已计划将其从数据库中删除的实体类。
+游离状态 (detached): 已被持久化，但不再处于 Session 的缓存中的实体类。
+
+需要特别关注的是持久化状态的对象，这类对象一般是从数据库中查询出来的，同时会存在 Session 缓存中，由于存在缓存清理与 dirty checking 机制，当修改了对象的属性，
+无需手动执行 save 方法，当事务提高后，改动会自动提交到数据库中去。
+缓存清理与 dirty checking
+当事务提交后，会进行缓存清理操作，所有 session 中的持久化对象都会进行 dirty checking。简单描述一下过程：
+
+在一个事务中的各种查询结果都会缓存在对应的 session 中，并且存一份快照。
+在事务 commit 前，会调用 session.flush() 进行缓存清理和 dirty checking。将所有 session 中的对象和对应快照进行对比，如果发生了变化，则说明该对象 dirty。
+执行 update 和 delete 等操作将 session 中变化的数据同步到数据库中。
+开启只读事务可屏蔽 dirty checking，提高查询效率。
+(https://zhuanlan.zhihu.com/p/170333940)
+JPA注解查询的两种参数注入方式
+ ?参数位置
+
+@Query(value = "select name,author,price from Book b where b.price>?1 and b.price<?2")
+List<Book> findByPriceRange(long price1, long price2);
+        b   :参数名
+
+@Query(value = "select name,author,price from Book b where b.name = :name AND b.author=:author AND b.price=:price")
+List<Book> findByNamedParam(@Param("name") String name, @Param("author") String author,
+        @Param("price") long price);
+
+		
+
+springMVC：		
+1. springMVC怎么样把某个请求映射到特定的方法上面？
+
+　　答：直接在方法上面加上注解@RequestMapping,并且在这个注解里面写上要拦截的路径。
+
+2. @RequestMapping注解用在类上面有什么作用？
+
+　　答：是一个用来处理请求地址映射的注解，可用于类或方法上。用于类上，表示类中的所有响应请求的方法都是以该地址作为父路径。
+
+3. 如果在拦截请求中,我想拦截get方式提交的方法,怎么配置？
+
+　　答：可以在@RequestMapping注解里面加上method=RequestMethod.GET。
+
+4. SpringMvc用什么对象从后台向前台传递数据的？
+
+　　答：通过ModelMap对象,可以在这个对象里面用put方法,把对象加到里面,前台就可以通过el表达式拿到。
+
+5. SpringMvc中有个类把视图和数据都合并的一起的,叫什么？
+
+　　答：叫ModelAndView。
+
+6. 怎么样把ModelMap里面的数据放入Session里面？
+
+　　可以在类上面加上@SessionAttributes注解,里面包含的字符串就是要放入session里面的key。
+
+7.谈谈你对mvc的理解
+
+　　MVC是Model—View—Controler的简称。即模型—视图—控制器。MVC是一种设计模式，它强制性的把应用程序的输入、处理和输出分开。
+
+　　MVC中的模型、视图、控制器它们分别担负着不同的任务。
+
+视图: 视图是用户看到并与之交互的界面。视图向用户显示相关的数据，并接受用户的输入。视图不进行任何业务逻辑处理。
+模型: 模型表示业务数据和业务处理。相当于JavaBean。一个模型能为多个视图提供数据。这提高了应用程序的重用性
+控制器: 当用户单击Web页面中的提交按钮时,控制器接受请求并调用相应的模型去处理请求。然后根据处理的结果调用相应的视图来显示处理的结果。
+　　MVC的处理过程：首先控制器接受用户的请求，调用相应的模型来进行业务处理，并返回数据给控制器。控制器调用相应的视图来显示处理的结果。并通过视图呈现给用户。
+
+SpringMVC常见经典面试题
+
+1. Springmvc 执行流程是什么?
+用户发送请求至前端控制器DispatcherServlet；
+DispatcherServlet收到请求后，调用HandlerMapping处理器映射器，请求获取Handle；
+处理器映射器根据请求url找到具体的处理器，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet；
+DispatcherServlet 调用 HandlerAdapter处理器适配器；
+HandlerAdapter 经过适配调用 具体处理器(Handler，也叫后端控制器)；
+Handler执行完成返回ModelAndView；
+HandlerAdapter将Handler执行结果ModelAndView返回给DispatcherServlet；
+DispatcherServlet将ModelAndView传给ViewResolver视图解析器进行解析；
+ViewResolver解析后返回具体View；
+DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）
+DispatcherServlet响应用户。
+
+GET方式：
+
+每次发生请求之前对URL进行编码：
+
+例如：Location.href="/encodeURI"(“http://localhost/test/s?name=中文&sex=女”);
+
+更简便的方法，在服务器端配置URL编码格式：修改tomcat的配置文件server.xml：
+
+只需增加 URIEncoding=“UTF-8” 这一句，然后重启tomcat即可。
+
+POST方式：
+
+可以每次在request解析数据时设置编码格式：request.setCharacterEncoding(“utf-8”);
+
+也可以使用编码过滤器来解决，最常用的方法是使用Spring提供的编码过滤器：
+
+在Web.xml中增加如下配置
+<param-name>encoding</param-name>
+<param-value>UTF-8</param-value>
+
+Springmvc 怎么样设定重定向和转发的？
+在返回值前面加"forward:“就可以让结果转发,譬如"forward:user.do?name=method4”
+在返回值前面加"redirect:“就可以让返回值重定向,譬如"redirect:http://www.baidu.com”
+
+请求转发：
+request.getRequestDispatcher("/student_list.jsp").forward(request,response);
+重定向：
+response.sendRedirect(request.getContextPath + "/student_list.jsp")		
+总结：
+ 1、转发是在服务器端完成的，重定向是在客户端发生的；
+ 2、转发的速度快，重定向速度慢；
+ 3、转发是同一次请求，重定向是两次请求；
+ 4、转发地址栏没有变化，重定向地址栏有变化；
+ 5、转发必须是在同一台服务器下完成，重定向可以在不同的服务器下完成。	
+
+ 
+ Springmvc 怎么和AJAX相互调用的？
+通过Jackson框架就可以把Java里面的对象直接转化成Js可以识别的Json对象。
+ 
+Springmvc 如何做异常处理 ？
+可以将异常抛给Spring框架，由Spring框架来处理；自定义实现spring的全局异常解析器HandlerExceptionResolver，在异常处理器中添视图页面即可。
+ 
+Springmvc 的控制器是不是单例模式,如果是,有什么问题,怎么解决？
+是单例模式,所以在多线程访问的时候有线程安全问题,不要用同步,会影响性能的,解决方案是在控制器里面不能写字段。 
+ 
+Springmvc 中 如果拦截get方式提交的方法,怎么配置？
+可以在@RequestMapping注解里面加上method=RequestMethod.GET
+
+Springmvc 怎么样把ModelMap里面的数据放入Session里面？
+可以在类上面加上@SessionAttributes注解,里面包含的字符串就是要放入session里面的key。
+ 
+Springmvc 和struts2的区别有哪些?
+springmvc的入口是一个servlet即前端控制器（DispatchServlet），而struts2入口是一个filter过虑器（StrutsPrepareAndExecuteFilter）。
+springmvc是基于方法开发(一个url对应一个方法)，请求参数传递到方法的形参，可以设计为单例或多例(建议单例)，struts2是基于类开发，传递参数是通过类的属性，只能设计为多例。
+————————————————
+
+ Springmvc 用什么对象从后台向前台传递数据的？
+答：通过ModelMap对象,可以在这个对象里面用put方法,把对象加到里面,前台就可以通过el表达式拿到。
+
+13. springmvc 中当一个方法向AJAX返回特殊对象,譬如Object,List等,需要做什么处理？
+要加上@ResponseBody注解。
+
+Springmvc 中对于文件的上传有哪些需要注意
+在页面form中提交enctype="multipart/form-data"的数据时，需要springmvc对multipart类型的数据进行解析。
+在springmvc.xml中配置multipart类型解析器。
+方法中使用：MultipartFile attach (单个文件上传) 或者 MultipartFile[] attachs (多个文件上传)
+
+
+Springmvc 中拦截器如何使用
+定义拦截器，实现HandlerInterceptor接口。接口中提供三个方法。
+preHandle ：进入 Handler方法之前执行，用于身份认证、身份授权，比如身份认证，如果认证通过表示当前用户没有登陆，需要此方法拦截不再向下执行
+postHandle：进入Handler方法之后，返回modelAndView之前执行，应用场景从modelAndView出发：将公用的模型数据(比如菜单导航)在这里传到视图，也可以在这里统一指定视图
+afterCompletion：执行Handler完成执行此方法，应用场景：统一异常处理，统一日志处理
+拦截器配置：
+针对HandlerMapping配置(不推荐)：springmvc拦截器针对HandlerMapping进行拦截设置，如果在某个HandlerMapping中配置拦截，
+经过该 HandlerMapping映射成功的handler最终使用该 拦截器。(一般不推荐使用)
+类似全局的拦截器：springmvc配置类似全局的拦截器，springmvc框架将配置的类似全局的拦截器注入到每个HandlerMapping中
+————————————————
+
+1、什么是Spring MVC ？简单介绍下你对springMVC的理解?
+
+Spring MVC是一个基于MVC架构的用来简化web应用程序开发的应用开发框架，它是Spring的一个模块,无需中间整合层来整合 ，它和Struts2一样都属于表现层的框架。
+在web模型中，MVC是一种很流行的框架，通过把Model，View，Controller分离，把较为复杂的web应用分成逻辑清晰的几部分，简化开发，减少出错，方便组内开发人员之间的配合。
+
+3、Springmvc的优点:
+
+（1）它是基于组件技术的。全部的应用对象,无论控制器和视图,还是业务对象之类的都是 java组件.并且和Spring提供的其他基础结构紧密集成.
+
+（2）不依赖于Servlet API(目标虽是如此,但是在实现的时候确实是依赖于Servlet的)
+
+（3）可以任意使用各种视图技术,而不仅仅局限于JSP
+
+（4） 支持各种请求资源的映射策略
+
+（5）它应是易于扩展的
+
+
+Spring MVC的主要组键？
+
+（1）前端控制器 DispatcherServlet（不需要程序员开发）
+
+作用：接收请求、响应结果 相当于转发器，有了DispatcherServlet 就减少了其它组件之间的耦合度。
+
+（2）处理器映射器HandlerMapping（不需要程序员开发）
+
+作用：根据请求的URL来查找Handler
+
+（3）处理器适配器HandlerAdapter
+
+注意：在编写Handler的时候要按照HandlerAdapter要求的规则去编写，这样适配器HandlerAdapter才可以正确的去执行Handler。
+
+（4）处理器Handler（需要程序员开发）
+
+（5）视图解析器 ViewResolver（不需要程序员开发）
+
+作用：进行视图的解析 根据视图逻辑名解析成真正的视图（view）
+
+（6）视图View（需要程序员开发jsp）
+
+View是一个接口， 它的实现类支持不同的视图类型（jsp，freemarker，pdf等等）
+
+
+SpringMvc怎么和AJAX相互调用的？
+
+通过Jackson框架就可以把Java里面的对象直接转化成Js可以识别的Json对象。具体步骤如下 ：
+
+（1）加入Jackson.jar
+
+（2）在配置文件中配置json的映射
+
+（3）在接受Ajax方法里面可以直接返回Object,List等,但方法前面要加上@ResponseBody注解
+
+
+Spring:原理  https://www.cnblogs.com/shijiaoyun/p/7458341.html
+
+列举一些重要的Spring模块？
+Spring Core：基础，可以说Spring其他所有的功能都依赖于该类库。主要提供IOC和DI功能。
+
+Spring Aspects：该模块为与AspectJ的集成提供支持。
+
+Spring AOP：提供面向方面的编程实现。
+
+Spring JDBC：Java数据库连接。
+
+Spring JMS：Java消息服务。
+
+Spring ORM：用于支持Hibernate等ORM工具
+
+谈谈自己对于Spring IOC和AOP的理解
+
+IOC（Inversion Of Controll，控制反转）是一种设计思想，就是将原本在程序中手动创建对象的控制权，交由给Spring框架来管理。
+容器是Spring用来实现IOC的载体，IOC容器实际上就是一个Map(key, value)，Map中存放的是各种对象
+
+AOP（Aspect-Oriented Programming，面向切面编程）能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来，
+便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可扩展性和可维护性。
+
+Spring AOP是基于动态代理的，如果要代理的对象实现了某个接口，那么Spring AOP就会使用JDK动态代理去创建代理对象；而对于没有实现接口的对象，
+就无法使用JDK动态代理，转而使用CGlib动态代理生成一个被代理对象的子类来作为代理。
+
+Spring AOP和AspectJ AOP有什么区别？
+Spring AOP是属于运行时增强，而AspectJ是编译时增强。Spring AOP基于代理（Proxying），而AspectJ基于字节码操作（Bytecode Manipulation）。
+Spring AOP已经集成了AspectJ，AspectJ应该算得上是Java生态系统中最完整的AOP框架了。AspectJ相比于Spring AOP功能更加强大，但是Spring AOP相对来说更简单。
+如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择AspectJ，它比SpringAOP快很多。
+
+Spring中的bean的作用域有哪些？
+
+1.singleton：唯一bean实例，Spring中的bean默认都是单例的。
+
+2.prototype：每次请求都会创建一个新的bean实例。
+
+3.request：每一次HTTP请求都会产生一个新的bean，该bean仅在当前HTTP request内有效。
+
+4.session：每一次HTTP请求都会产生一个新的bean，该bean仅在当前HTTP session内有效。
+
+
+Spring中的单例bean的线程安全问题了解吗？
+
+大部分时候我们并没有在系统中使用多线程，所以很少有人会关注这个问题。单例bean存在线程问题，主要是因为当多个线程操作同一个对象的时候，
+对这个对象的非静态成员变量的写操作会存在线程安全问题。
+
+有两种常见的解决方案：
+
+1.在bean对象中尽量避免定义可变的成员变量（不太现实）。
+
+2.在类中定义一个ThreadLocal成员变量，将需要的可变成员变量保存在ThreadLocal中（推荐的一种方式）。
+
+
+Spring框架中用到了哪些设计模式
+
+1.工厂设计模式：Spring使用工厂模式通过BeanFactory和ApplicationContext创建bean对象。
+1，定义抽象类(抽象工厂)，定义大概要干嘛
+2，实现抽象工厂，返回工厂对象
+3，创建类返回具体工厂
+
+
+
+3.单例设计模式：Spring中的bean默认都是单例的。
+单例设计模式   
+某个类必须只有一个实例 （构造器私有化）类必须自行创建实例（含有一个该类的静态变量存储该实例）类自行向其他类提供这个实例  （对外提供获取该实例对象的方式）
+饿汉式  在类初始化的时候直接创建对象  不存在线程安全问题
+懒汉式：延迟创建对象  4、线程不安全式（适用于单线程）
+5、双重校验式，线程安全（适用于多线程）
+if(!instance==null){
+        synchronized(s2.class){
+        
+          if(instance==null){
+           instance=new s2();
+          }
+        }  
+     }
+     return instance;
+	 
+或者:	6、静态内部类式（适用于多线程）
+	8     private static class Inner{
+ 9         private static final s3 instance =new s3();
+10    } 
+
+
+
+
+7.适配器模式：Spring AOP的增强或通知（Advice）使用到了适配器模式、Spring MVC中也是用到了适配器模式适配Controller
+
+2.代理设计模式：Spring AOP功能的实现。
+
+
+简单说明什么是递归？
+你定义函数f(n)=nf(n-1)；而f(n-1)又是这个定义的函数，这就是递归。必须要有结束条件
+
+TCP:
+
+三次握手(Three-Way Handshake)  
+原理：
+
+第一次握手：Client什么都不能确认；Server确认了对方发送正常。
+
+第二次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己接受正常，对方发送正常。
+
+第三次握手：Client确认了：自己发送、接受正常，对方发送，接受正常；Server确认了：自己发送了、接受正常，对方发送、接受正常。
+
+所以三次握手就能确认双方收发功能是否正常。
+
+
+四次挥手(Four-Way Wavehand)
+第一次挥手：Client发送关闭数据传输请求。我要关了
+
+第二次挥手：Server收到请求，发送表示自己收到的回馈。好的
+
+第三次挥手：Server发送回应表示将会关闭数据传输。我也要关了
+
+第四次挥手：Client收到信息后，发送确认收到信号回到server，此时连接断开。好的
+
+为什么建立连接是三次握手，而关闭连接却是四次挥手呢？
+
+这是因为服务端收到建立连接请求的报文后，把(确认收到，我自己收发正常)放在一个报文里发送给客户端。
+而关闭连接是，确认收到，我也要关闭了，分开发送。
+
+
+
+
+
+TCP协议和UDP协议的区别是什么
+TCP协议是有连接的，有连接的意思是开始传输实际数据之前TCP的客户端和服务器端必须通过三次握手建立连接，会话结束之后也要结束连接。而UDP是无连接的
+TCP协议保证数据按序发送，按序到达，提供超时重传来保证可靠性，但是UDP不保证按序到达，甚至不保证到达，只是努力交付，即便是按序发送的序列，也不保证按序送到。
+TCP协议所需资源多，TCP首部需20个字节（不算可选项），UDP首部字段只需8个字节。
+TCP有流量控制和拥塞控制，UDP没有，网络拥堵不会影响发送端的发送速率
+TCP是一对一的连接，而UDP则可以支持一对一，多对多，一对多的通信。
+TCP面向的是字节流的服务，UDP面向的是报文的服务。
+
+
+Http定义了与服务器交互的不同方法，最基本的方法有4种，分别是GET，POST，PUT，DELETE。URL全称是资源描述符
+1.GET请求的数据会附在URL之后，以?分割URL和传输数据，POST把提交的数据则放置在是HTTP包的包体中
+2，Get请求URL的长度是有限的，开发中曾遇到过请求(414),改为Post，把可能超长的参数放在请求体。
+3，POST的安全性要比GET的安全性高。
+
+1.servlet
+
+servlet是用java编写的服务端应用程序，这些servlet都要实现servlet这个接口
+
+2.主要功能
+
+交互式的浏览和修改数据，生成动态web内容
+
+3.必须重写doget()方法和dopost（）方法，或重写service（）方法完成对get和post的响应
+
+4.servlet 的生命周期
+1Servlet容器负责加载和实例化Servlet。当Servlet容器启动时，或者在容器检测到需要这个Servlet来响应第一个请求时，创建Servlet实例。
+2在Servlet实例化之后，容器将调用Servlet的init()方法初始化这个对象。
+
+如何配置Servlet的初始化参数？   在web.xml中该Servlet的定义标记中
+
+3Servlet容器调用Servlet的service()方法对请求进行处理。要注意的是，在service()方法调用之前，init()方法必须成功执行。
+
+4，当容器关闭，容器就会调用实例的destroy()方法，以便让该实例可以释放它所使用的资源
+
+
+
+Filter的生命周期和Servlet类似
+
+构造器：创建Filter实例是调用，Filter实例服务器一旦启动就会被创建
+
+init()：实例创建后马上被调用，用来对Filter做一些初始化的操作
+
+doFilter()：Filter的主要方法，用来完成过滤器主要功能的方法，每次访问目标资源时都会调用。
+
+destroy()：服务器停止时调用，用来释放资源。
+
+
+拦截器的概念
+    java里的拦截器是动态拦截Action调用的对象，它提供了一种机制可以使开发者在一个Action执行的前后执行一段代码，也可以在一个Action
+执行前阻止其执行，同时也提供了一种可以提取Action中可重用部分代码的方式。在AOP中，拦截器用于在某个方法或者字段被访问之前，进行拦截
+然后再之前或者之后加入某些操作。
+
+自定义拦截器的步骤
+    第一步：自定义一个实现了Interceptor接口的类，或者继承抽象类AbstractInterceptor。
+    第二步：在配置文件中注册定义的拦截器。
+    第三步：在需要使用Action中引用上述定义的拦截器，为了方便也可以将拦截器定义为默认的拦截器，这样在不加特殊说明的情况下，所有的
+Action都被这个拦截器拦截。
+
+4，过滤器与拦截器的区别
+    过滤器可以简单的理解为“取你所想取”，过滤器关注的是web请求；拦截器可以简单的理解为“拒你所想拒”，拦截器关注的是方法调用，比如拦截
+敏感词汇。
+4.1，拦截器是基于java反射机制来实现的，而过滤器是基于函数回调来实现的。（有人说，拦截器是基于动态代理来实现的）
+4.2，拦截器不依赖servlet容器，过滤器依赖于servlet容器。
+4.3，拦截器只对Action起作用，过滤器可以对所有请求起作用。
+4.4，拦截器可以访问Action上下文和值栈中的对象，过滤器不能。
+4.5，在Action的生命周期中，拦截器可以多次调用，而过滤器只能在容器初始化时调用一次。
+
+5，Spring拦截器
+5.1，抽象类HandlerInterceptorAdapter
+    我们如果在项目中使用了Spring框架，那么，我们可以直接继承HandlerInterceptorAdapter.java这个抽象类，来实现我们自己的拦截器。
+
+
+	
+	
+
+
+jDBC:
+早期进行数据库操作
+  1、原理：一般来说，java 应用程序访问数据库的过程是：
+  ①、加载数据库驱动程序；
+  ②、通过 jdbc 建立数据库连接；
+  ③、访问数据库，执行 sql 语句；
+  ④、断开数据库连接。
+
+  2、代码
+
+
+// 查询所有用户
+Public void FindAllUsers() {
+    // 1、装载 sqlserver 驱动对象
+    DriverManager.registerDriver(new SQLServerDriver());
+    // 2、通过 JDBC 建立数据库连接
+    Connection con = DriverManager.getConnection("jdbc:sqlserver://192.168.2.6:1433;DatabaseName=customer", "sa", "123");
+    // 3、创建状态
+    Statement state = con.createStatement();
+    // 4、查询数据库并返回结果
+    ResultSet result = state.executeQuery("select * from users");
+
+	
+连接池的工作原理
+
+  连接池的工作原理主要由三部分组成，分别为连接池的建立，连接池中连接的使用管理，连接池的关闭。
+  第一、连接池的建立。 一般在系统初始化时，连接池会根据系统配置建立，并在池中建立几个连接对象，以便使用时能从连接池中获取。
+  第二、连接池的管理。 连接池管理策略是连接池机制的核心，连接池内连接的分配和释放对系统的性能有很大的影响。其策略是：
+当客户请求数据库连接时，首先查看连接池中是否有空闲连接，如果存在空闲连接，则将连接分配给客户使用并作相应处理
+  第三、连接池的关闭。 当应用程序退出时，关闭连接池中所有的链接，释放连接池相关资源，该过程正好与创建相反。
+PreparedStatement相比Statement的好处
+  大多数时候我们都使用PreparedStatement代替Statement
+  1、PreparedStatement是预编译的，比Statement速度快；
+  2、代码的可读性和可维护性更好
+perstmt = con.prepareStatement("insert into tb_name (col1,col2,col2,col4) values (?,?,?,?)");
+3、安全性PreparedStatement可以防止SQL注入攻击，而Statement却不能。	
+	
+Truncate与delete的区别
+  TRUNCATE table：删除内容、不删除定义、释放空间
+  DELETE table：删除内容、不删除定义、不释放空间,可会滚
+  DROP table：删除内容和定义，释放空间
+
+
+相同点：
+二者都是基于mvc的web层的框架，都是负责接收用户浏览器提交的请求参数，通过某些校验操作调用业务层，而后获取到业务层返回的数据，将数据通过某种方式在前台展示。
+
+不同点：
+ (1)springmvc是基于方法开发的，struts2是基于类开发的。
+ 
+ (2)因为二者基于的出发点不同，所以在接收请求参数时区别比较大。
+
+springmvc是通过参数绑定接收浏览器请求参数（方法上各种形参(request、response、session、Model、ModelMap、简单类型、简单pojo、包装类pojo）浏览器的请求参数），方法执行结束，形参数据就会销毁。
+struts2是通过类中的成员变量接收浏览器请求参数的。
+
+(3)由于接收请求参数方式的不同。
+
+springmvc：因为方法之间是线程隔离的，所以springmvc支持单例和多例的开发方式。
+struts2：成员变量在开发中多线程会存在线程安全问题，所以struts2只能支持多例的开发方式。
+
+(4)springmvc是通过存储数据ModelAndView，在前台页面通过jstl(默认)展示数据的；struts2是通过值栈存储数据，在页面通过OGNL展示数据的。
+
+详细地：
+1.核心控制器（前端控制器、预处理控制器）：对于使用过mvc框架的人来说这个词应该不会陌生，核心控制器的主要用途是处理所有的请求，
+然后对那些特殊的请求 （控制器）统一的进行处理(字符编码、文件上传、参数接受、异常处理等等),spring mvc核心控制器是Servlet，而Struts2是Filter。
+
+2.控制器实例：Spring Mvc会比Struts快一些（理论上）。Spring Mvc是基于方法设计，而Sturts是基于对象，每次发一次请求都会实例一个action，每个action都会被注入 属性，
+而Spring更像Servlet一样，只有一个实例，每次请求执行对应的方法即可(注意：由于是单例实例，所以应当避免全局变量的修改，这样会产生线程安全问题)。
+
+3.管理方式：大部分的公司的核心架构中，就会使用到spring,而spring mvc又是spring中的一个模块，所以spring对于spring mvc的控制器管理更加简单方便，
+而且提供了全 注解方式进行管理，各种功能的注解都比较全面，使用简单，而struts2需要采用XML很多的配置参数来管理。
+
+
+
+
+
+@Component和@Bean的区别是什么
+
+1.作用对象不同。@Component注解作用于类，而@Bean注解作用于方法。
+
+2.@Component注解通常是通过类路径扫描来自动侦测以及自动装配到Spring容器中（我们可以使用@ComponentScan注解定义要扫描的路径）。@Bean注解通常是在标有该注解的方法中定义产生这个bean，告诉Spring这是某个类的实例，当我需要用它的时候还给我。
+
+3.@Bean注解比@Component注解的自定义性更强，而且很多地方只能通过@Bean注解来注册bean。比如当引用第三方库的类需要装配到Spring容器的时候，就只能通过@Bean注解来实现。
+@Bean注解的使用示例：
+
+复制代码
+@Configuration
+public class AppConfig {
+    @Bean
+    public TransferService transferService() {
+        return new TransferServiceImpl();
+    }
+}
+复制代码
+上面的代码相当于下面的XML配置：
+
+<beans>
+    <bean id="transferService" class="com.yanggb.TransferServiceImpl"/>
+</beans>
+
+将一个类声明为Spring的bean的注解有哪些？
+
+我们一般使用@Autowired注解去自动装配bean。而想要把一个类标识为可以用@Autowired注解自动装配的bean，可以采用以下的注解实现：
+
+1.@Component注解。通用的注解，可标注任意类为Spring组件。如果一个Bean不知道属于哪一个层，可以使用@Component注解标注。
+
+2.@Repository注解。对应持久层，即Dao层，主要用于数据库相关操作。
+
+3.@Service注解。对应服务层，即Service层，主要涉及一些复杂的逻辑，需要用到Dao层（注入）。
+
+4.@Controller注解。对应Spring MVC的控制层，即Controller层，主要用于接受用户请求并调用Service层的方法返回数据给前端页面。
+
+Spring事务管理的方式有几种？
+
+1.编程式事务：在代码中硬编码（不推荐使用）。
+2.声明式事务：在配置文件中配置（推荐使用），分为基于XML的声明式事务和基于注解的声明式事务
+Spring事务中的隔离级别有哪几种？
+
+在TransactionDefinition接口中定义了五个表示隔离级别的常量：
+
+ISOLATION_DEFAULT：使用后端数据库默认的隔离级别，Mysql默认采用的REPEATABLE_READ隔离级别；Oracle默认采用的READ_COMMITTED隔离级别。
+
+ISOLATION_READ_UNCOMMITTED：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读。
+
+ISOLATION_READ_COMMITTED：允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生
+
+ISOLATION_REPEATABLE_READ：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。
+
+ISOLATION_SERIALIZABLE：最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，
+该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
+
+Spring事务中有哪几种事务传播行为？
+
+在TransactionDefinition接口中定义了八个表示事务传播行为的常量。
+
+支持当前事务的情况：
+
+PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。
+
+PROPAGATION_SUPPORTS： 如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。
+
+PROPAGATION_MANDATORY： 如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。（mandatory：强制性）。
+
+不支持当前事务的情况：
+
+PROPAGATION_REQUIRES_NEW： 创建一个新的事务，如果当前存在事务，则把当前事务挂起。
+
+PROPAGATION_NOT_SUPPORTED： 以非事务方式运行，如果当前存在事务，则把当前事务挂起。
+
+PROPAGATION_NEVER： 以非事务方式运行，如果当前存在事务，则抛出异常。
+
+其他情况：
+
+PROPAGATION_NESTED： 如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于PROPAGATION_REQUIRED。
+
+
+2、Spring 的优点？
+
+（1）spring属于低侵入式设计，代码的污染极低；
+
+（2）spring的DI机制将对象之间的依赖关系交由框架处理，减低组件的耦合性；
+
+（3）Spring提供了AOP技术，支持将一些通用任务，如安全、事务、日志、权限等进行集中式管理，从而提供更好的复用。
+
+（4）spring对于主流的应用框架提供了集成支持。
+
+3、Spring的IoC理解：
+
+（1）IOC就是控制反转，指创建对象的控制权转移给Spring框架进行管理，并由Spring根据配置文件去创建实例和管理各个实例之间的依赖关系，对象与对象之间松散耦合，也利于功能的复用。DI依赖注入，和控制反转是同一个概念的不同角度的描述，即 应用程序在运行时依赖IoC容器来动态注入对象需要的外部依赖。
+
+（2）最直观的表达就是，以前创建对象的主动权和时机都是由自己把控的，IOC让对象的创建不用去new了，可以由spring自动生产，使用java的反射机制，根据配置文件在运行时动态的去创建对象以及管理对象，并调用对象的方法的。
+
+（3）Spring的IOC有三种注入方式 ：构造器注入、setter方法注入、根据注解注入。
+
+
+1）AspectJ是静态代理，也称为编译时增强，AOP框架会在编译阶段生成AOP代理类，并将AspectJ(切面)织入到Java字节码中，运行的时候就是增强之后的AOP对象。
+（2）Spring AOP使用的动态代理，所谓的动态代理就是说AOP框架不会去修改字节码，而是每次运行时在内存中临时为方法生成一个AOP对象，
+这个AOP对象包含了目标对象的全部方法，并且在特定的切点做了增强处理，并回调原对象的方法。
+
+
+Spring AOP中的动态代理主要有两种方式，JDK动态代理和CGLIB动态代理：
+
+        ① JDK动态代理只提供接口的代理，不支持类的代理，要求被代理类实现接口。JDK动态代理的核心是InvocationHandler接口和Proxy类，在获取代理对象时，使用Proxy类来动态创建目标类的代理类（即最终真正的代理类，这个类继承自Proxy并实现了我们定义的接口），当代理对象调用真实对象的方法时， InvocationHandler 通过invoke()方法反射来调用目标类中的代码，动态地将横切逻辑和业务编织在一起；
+
+ InvocationHandler 的 invoke(Object  proxy,Method  method,Object[] args)：proxy是最终生成的代理对象;  method 是被代理目标实例的某个具体方法;  args 是被代理目标实例某个方法的具体入参, 在方法反射调用时使用。
+
+        ② 如果被代理类没有实现接口，那么Spring AOP会选择使用CGLIB来动态代理目标类。CGLIB（Code Generation Library），是一个代码生成的类库，可以在运行时动态的生成指定类的一个子类对象，并覆盖其中特定方法并添加增强代码，从而实现AOP。CGLIB是通过继承的方式做的动态代理，因此如果某个类被标记为final，那么它是无法使用CGLIB做动态代理的。
+
+（3）静态代理与动态代理区别在于生成AOP代理对象的时机不同，相对来说AspectJ的静态代理方式具有更好的性能，但是AspectJ需要特定的编译器进行处理，而Spring AOP则无需特定的编译器处理。
+
+IoC让相互协作的组件保持松散的耦合，而AOP编程允许你把遍布于应用各层的功能分离出来形成可重用的功能组件。
+
+5、Spring AOP里面的几个名词的概念：
+
+（1）连接点（Join point）：指程序运行过程中所执行的方法。在Spring AOP中，一个连接点总代表一个方法的执行。 
+
+（2）切面（Aspect）：被抽取出来的公共模块，可以用来会横切多个对象。Aspect切面可以看成 Pointcut切点 和 Advice通知 的结合，一个切面可以由多个切点和通知组成。
+
+在Spring AOP中，切面可以在类上使用 @AspectJ 注解来实现。
+
+（3）切点（Pointcut）：切点用于定义 要对哪些Join point进行拦截。
+
+切点分为execution方式和annotation方式。execution方式可以用路径表达式指定对哪些方法拦截，比如指定拦截add*、search*。annotation方式可以指定被哪些注解修饰的代码进行拦截。
+
+（4）通知（Advice）：指要在连接点（Join Point）上执行的动作，即增强的逻辑，比如权限校验和、日志记录等。通知有各种类型，包括Around、Before、After、After returning、After throwing。
+
+（5）目标对象（Target）：包含连接点的对象，也称作被通知（Advice）的对象。 由于Spring AOP是通过动态代理实现的，所以这个对象永远是一个代理对象。
+
+（6）织入（Weaving）：通过动态代理，在目标对象（Target）的方法（即连接点Join point）中执行增强逻辑（Advice）的过程。
+
+https://blog.csdn.net/a745233700/article/details/80959716
+
+、Spring通知（Advice）有哪些类型？
+
+（1）前置通知（Before Advice）：在连接点（Join point）之前执行的通知。
+
+（2）后置通知（After Advice）：当连接点退出的时候执行的通知（不论是正常返回还是异常退出）。 
+
+（3）环绕通知（Around Advice）：包围一个连接点的通知，这是最强大的一种通知类型。 环绕通知可以在方法调用前后完成自定义的行为。它也可以选择是否继续执行连接点或直接返回它们自己的返回值或抛出异常来结束执行。
+
+（4）返回后通知（AfterReturning Advice）：在连接点正常完成后执行的通知（如果连接点抛出异常，则不执行）
+
+（5）抛出异常后通知（AfterThrowing advice）：在方法抛出异常退出时执行的通知
+
+
+Spring容器的启动流程：
+
+（1）初始化Spring容器，注册内置的BeanPostProcessor的BeanDefinition到容器中：
+
+① 实例化BeanFactory【DefaultListableBeanFactory】工厂，用于生成Bean对象
+② 实例化BeanDefinitionReader注解配置读取器，用于对特定注解（如@Service、@Repository）的类进行读取转化成  BeanDefinition 对象，
+（BeanDefinition 是 Spring 中极其重要的一个概念，它存储了 bean 对象的所有特征信息，如是否单例，是否懒加载，factoryBeanName 等）
+③ 实例化ClassPathBeanDefinitionScanner路径扫描器，用于对指定的包目录进行扫描查找 bean 对象
+（2）将配置类的BeanDefinition注册到容器中：
+
+（3）调用refresh()方法刷新容器：
+
+BeanFactory和ApplicationContext有什么区别？
+
+        BeanFactory和ApplicationContext是Spring的两大核心接口，都可以当做Spring的容器。
+
+（1）BeanFactory是Spring里面最底层的接口，是IoC的核心，定义了IoC的基本功能，包含了各种Bean的定义、加载、实例化，依赖注入和生命周期管理。ApplicationContext接口作为BeanFactory的子类，除了提供BeanFactory所具有的功能外，还提供了更完整的框架功能：
+
+继承MessageSource，因此支持国际化。
+资源文件访问，如URL和文件（ResourceLoader）。
+载入多个（有继承关系）上下文（即同时加载多个配置文件） ，使得每一个上下文都专注于一个特定的层次，比如应用的web层。
+提供在监听器中注册bean的事件。
+（2）①BeanFactroy采用的是延迟加载形式来注入Bean的，只有在使用到某个Bean时(调用getBean())，才对该Bean进行加载实例化。这样，我们就不能提前发现一些存在的Spring的配置问题。如果Bean的某一个属性没有注入，BeanFacotry加载后，直至第一次使用调用getBean方法才会抛出异常。
+
+        ②ApplicationContext，它是在容器启动时，一次性创建了所有的Bean。这样，在容器启动时，我们就可以发现Spring中存在的配置错误，这样有利于检查所依赖属性是否注入。 
+
+        ③ApplicationContext启动后预载入所有的单实例Bean，所以在运行的时候速度比较快，因为它们已经创建好了。相对于BeanFactory，ApplicationContext 唯一的不足是占用内存空间，当应用程序配置Bean较多时，程序启动较慢。
+
+（3）BeanFactory和ApplicationContext都支持BeanPostProcessor、BeanFactoryPostProcessor的使用，但两者之间的区别是：BeanFactory需要手动注册，而ApplicationContext则是自动注册。
+
+（4）BeanFactory通常以编程的方式被创建，ApplicationContext还能以声明的方式创建，如使用ContextLoader。
+————————————————
+
+Spring Bean的生命周期？
+
+简单来说，Spring Bean的生命周期只有四个阶段：实例化 Instantiation --> 属性赋值 Populate  --> 初始化 Initialization  --> 销毁 Destruction
+
+但具体来说，Spring Bean的生命周期包含下图的流程：
+————————————————
+
+Spring框架中的Bean是线程安全的么？如果线程不安全，那么如何处理？
+
+Spring容器本身并没有提供Bean的线程安全策略，因此可以说Spring容器中的Bean本身不具备线程安全的特性，但是具体情况还是要结合Bean的作用域来讨论。
+
+（1）对于prototype作用域的Bean，每次都创建一个新对象，也就是线程之间不存在Bean共享，因此不会有线程安全问题。
+
+（2）对于singleton作用域的Bean，所有的线程都共享一个单例实例的Bean，因此是存在线程安全问题的。但是如果单例Bean是一个无状态Bean，也就是线程中的操作不会对Bean的成员执行查询以外的操作，那么这个单例Bean是线程安全的。比如Controller类、Service类和Dao等，这些Bean大多是无状态的，只关注于方法本身。
+
+有状态Bean(Stateful Bean) ：就是有实例变量的对象，可以保存数据，是非线程安全的。
+
+无状态Bean(Stateless Bean)：就是没有实例变量的对象，不能保存数据，是不变类，是线程安全的。
+
+对于有状态的bean（比如Model和View），就需要自行保证线程安全，最浅显的解决办法就是将有状态的bean的作用域由“singleton”改为“prototype”。
+————————————————
+Spring的自动装配：
+（2）基于注解的自动装配方式：
+
+使用@Autowired、@Resource注解来自动装配指定的bean。在使用@Autowired注解之前需要在Spring配置文件进行配置，<context:annotation-config />。在启动spring IoC时，容器自动装载了一个AutowiredAnnotationBeanPostProcessor后置处理器，当容器扫描到@Autowied、@Resource或@Inject时，就会在IoC容器自动查找需要的bean，并装配给该对象的属性。在使用@Autowired时，首先在容器中查询对应类型的bean：
+
+如果查询结果刚好为一个，就将该bean装配给@Autowired指定的数据；
+
+如果查询的结果不止一个，那么@Autowired会根据名称来查找；
+
+如果上述查找的结果为空，那么会抛出异常。解决方法时，使用required=false。
+
+@Autowired可用于：构造函数、成员变量、Setter方法
+
+注：@Autowired和@Resource之间的区别：
+
+(1) @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它required属性为false）。
+
+(2) @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。
+
+
+
+Spring事务的实现方式和实现原理：
+
+Spring事务的本质其实就是数据库对事务的支持，没有数据库的事务支持，spring是无法提供事务功能的。Spring只提供统一事务管理接口，具体实现都是由各数据库自己实现，数据库事务的提交和回滚是通过binlog或者undo log实现的。Spring会在事务开始时，根据当前环境中设置的隔离级别，调整数据库隔离级别，由此保持一致。
+
+（1）Spring事务的种类：
+
+spring支持编程式事务管理和声明式事务管理两种方式：
+
+①编程式事务管理使用TransactionTemplate。
+
+②声明式事务管理建立在AOP之上的。其本质是通过AOP功能，对方法前后进行拦截，将事务处理的功能编织到拦截的方法中，也就是在目标方法开始之前启动一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务。
+
+声明式事务最大的优点就是不需要在业务逻辑代码中掺杂事务管理的代码，只需在配置文件中做相关的事务规则声明或通过@Transactional注解的方式，便可以将事务规则应用到业务逻辑中，减少业务代码的污染。唯一不足地方是，最细粒度只能作用到方法级别，无法做到像编程式事务那样可以作用到代码块级别。
+
+（2）spring的事务传播机制：
+
+spring事务的传播机制说的是，当多个事务同时存在的时候，spring如何处理这些事务的行为。事务传播机制实际上是使用简单的ThreadLocal实现的，所以，如果调用的方法是在新线程调用的，事务传播实际上是会失效的。
+
+① PROPAGATION_REQUIRED：（默认传播行为）如果当前没有事务，就创建一个新事务；如果当前存在事务，就加入该事务。
+
+② PROPAGATION_REQUIRES_NEW：无论当前存不存在事务，都创建新事务进行执行。
+
+③ PROPAGATION_SUPPORTS：如果当前存在事务，就加入该事务；如果当前不存在事务，就以非事务执行。‘
+
+④ PROPAGATION_NOT_SUPPORTED：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+
+⑤ PROPAGATION_NESTED：如果当前存在事务，则在嵌套事务内执行；如果当前没有事务，则按REQUIRED属性执行。
+
+⑥ PROPAGATION_MANDATORY：如果当前存在事务，就加入该事务；如果当前不存在事务，就抛出异常。
+
+⑦ PROPAGATION_NEVER：以非事务方式执行，如果当前存在事务，则抛出异常。
+
+（3）Spring中的隔离级别：
+
+① ISOLATION_DEFAULT：这是个 PlatfromTransactionManager 默认的隔离级别，使用数据库默认的事务隔离级别。
+
+② ISOLATION_READ_UNCOMMITTED：读未提交，允许事务在执行过程中，读取其他事务未提交的数据。
+
+③ ISOLATION_READ_COMMITTED：读已提交，允许事务在执行过程中，读取其他事务已经提交的数据。
+
+④ ISOLATION_REPEATABLE_READ：可重复读，在同一个事务内，任意时刻的查询结果都是一致的。
+
+⑤ ISOLATION_SERIALIZABLE：所有事务逐个依次执行。
+
+
+
+什么是Mybatis？
+
+（1）Mybatis是一个半ORM（对象关系映射）框架，它内部封装了JDBC，加载驱动、创建连接、创建statement等繁杂的过程，开发者开发时只需要关注如何编写SQL语句，可以严格控制sql执行性能，灵活度高。
+
+（2）作为一个半ORM框架，MyBatis 可以使用 XML 或注解来配置和映射原生信息，将 POJO映射成数据库中的记录，避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。
+
+称Mybatis是半自动ORM映射工具，是因为在查询关联对象或关联集合对象时，需要手动编写sql来完成。不像Hibernate这种全自动ORM映射工具，Hibernate查询关联对象或者关联集合对象时，可以根据对象关系模型直接获取。
+
+（3）通过xml 文件或注解的方式将要执行的各种 statement 配置起来，并通过java对象和 statement中sql的动态参数进行映射生成最终执行的sql语句，最后由mybatis框架执行sql并将结果映射为java对象并返回。（从执行sql到返回result的过程）。
+
+（4）由于MyBatis专注于SQL本身，灵活度高，所以比较适合对性能的要求很高，或者需求变化较多的项目，如互联网项目。
+
+2、Mybaits的优缺点：
+
+（1）优点：
+
+① 基于SQL语句编程，相当灵活，不会对应用程序或者数据库的现有设计造成任何影响，SQL写在XML里，解除sql与程序代码的耦合，便于统一管理；提供XML标签，支持编写动态SQL语句，并可重用。
+
+② 与JDBC相比，减少了50%以上的代码量，消除了JDBC大量冗余的代码，不需要手动开关连接；
+
+③ 很好的与各种数据库兼容（因为MyBatis使用JDBC来连接数据库，所以只要JDBC支持的数据库MyBatis都支持）。
+
+④ 能够与Spring很好的集成；
+
+⑤ 提供映射标签，支持对象与数据库的ORM字段关系映射；提供对象关系映射标签，支持对象关系组件维护。
+
+（2）缺点：
+
+① SQL语句的编写工作量较大，尤其当字段多、关联表多时，对开发人员编写SQL语句的功底有一定要求。
+
+② SQL语句依赖于数据库，导致数据库移植性差，不能随意更换数据库。
+
+
+#{}和${}的区别是什么？
+
+${}是字符串替换，#{}是预处理；
+
+Mybatis在处理${}时，就是把${}直接替换成变量的值。而Mybatis在处理#{}时，会对sql语句进行预处理，将sql中的#{}替换为?号，调用PreparedStatement的set方法来赋值；
+
+使用#{}可以有效的防止SQL注入，提高系统安全性。
+————————————————
+
+通常一个mapper.xml文件，都会对应一个Dao接口，这个Dao接口的工作原理是什么？Dao接口里的方法，参数不同时，方法能重载吗？
+
+（详细的工作原理请参考这篇文章：https://blog.csdn.net/a745233700/article/details/89308762）
+
+Mapper 接口的工作原理是JDK动态代理，Mybatis运行时会使用JDK动态代理为Mapper接口生成代理对象proxy，代理对象会拦截接口方法，根据类的全限定名+方法名，唯一定位到一个MapperStatement并调用执行器执行所代表的sql，然后将sql执行结果返回。
+
+Mapper接口里的方法，是不能重载的，因为是使用 全限名+方法名 的保存和寻找策略。
+
+Dao接口即Mapper接口。接口的全限名，就是映射文件中的namespace的值；接口的方法名，就是映射文件中Mapper的Statement的id值；接口方法内的参数，就是传递给sql的参数。
+
+当调用接口方法时，接口全限名+方法名拼接字符串作为key值，可唯一定位一个MapperStatement。在Mybatis中，每一个SQL标签，比如<select>、<insert>、<update>、<delete>标签，都会被解析为一个MapperStatement对象。
+
+举例：com.mybatis3.mappers.StudentDao.findStudentById，可以唯一找到namespace为com.mybatis3.mappers.StudentDao下面 id 为 findStudentById 的 MapperStatement。
+————————————————
+
+ybatis的Xml映射文件中，不同的Xml映射文件，id是否可以重复？
+
+不同的Xml映射文件，如果配置了namespace，那么id可以重复；如果没有配置namespace，那么id不能重复；
+
+原因就是namespace+id是作为Map<String, MapperStatement>的key使用的，如果没有namespace，就剩下id，那么，id重复会导致数据互相覆盖。有了namespace，自然id就可以重复，namespace不同，namespace+id自然也就不同。
+
+备注：在旧版本的Mybatis中，namespace是可选的，不过新版本的namespace已经是必须的了。
+
+Mybatis是如何进行分页的？分页插件的原理是什么？
+
+        Mybatis使用RowBounds对象进行分页，它是针对ResultSet结果集执行的内存分页，而非物理分页。可以在sql内直接书写带有物理分页的参数来完成物理分页功能，也可以使用分页插件来完成物理分页。
+
+       分页插件的基本原理是使用Mybatis提供的插件接口，实现自定义插件，在插件的拦截方法内拦截待执行的sql，然后重写sql，根据dialect方言，添加对应的物理分页语句和物理分页参数。
+————————————————
+
+简述Mybatis的插件运行原理，以及如何编写一个插件。
+
+答：Mybatis仅可以编写针对ParameterHandler、ResultSetHandler、StatementHandler、Executor这4种接口的插件，Mybatis使用JDK的动态代理，为需要拦截的接口生成代理对象以实现接口方法拦截功能，每当执行这4种接口对象的方法时，就会进入拦截方法，具体就是InvocationHandler的invoke()方法，当然，只会拦截那些你指定需要拦截的方法。
+
+编写插件：实现Mybatis的Interceptor接口并复写intercept()方法，然后再给插件编写注解，指定要拦截哪一个接口的哪些方法即可，最后在配置文件中配置你编写的插件。
+
+
+、Mybatis是否支持延迟加载？如果支持，它的实现原理是什么？
+
+Mybatis仅支持association关联对象和collection关联集合对象的延迟加载，association指的就是一对一，collection指的就是一对多查询。在Mybatis配置文件中，可以配置是否启用延迟加载lazyLoadingEnabled=true|false。
+
+延迟加载的基本原理是，使用CGLIB创建目标对象的代理对象，当调用目标方法时，进入拦截器方法，比如调用a.getB().getName()，拦截器invoke()方法发现a.getB()是null值，那么就会单独发送事先保存好的查询关联B对象的sql，把B查询上来，然后调用a.setB(b)，于是a的对象b属性就有值了，接着完成a.getB().getName()方法的调用。
+
+当然了，不光是Mybatis，几乎所有的包括Hibernate，支持延迟加载的原理都是一样的。
+
+ 
+
+ 9、Mybatis的一级、二级缓存:
+
+（1）一级缓存: 基于 PerpetualCache 的 HashMap 本地缓存，其存储作用域为 Session，当 Session flush 或 close 之后，该 Session 中的所有 Cache 就将清空，默认打开一级缓存。
+
+（2）二级缓存与一级缓存其机制相同，默认也是采用 PerpetualCache，HashMap 存储，不同在于其存储作用域为 Mapper(Namespace)，并且可自定义存储源，如 Ehcache。默认不打开二级缓存，要开启二级缓存，使用二级缓存属性类需要实现Serializable序列化接口(可用来保存对象的状态),可在它的映射文件中配置<cache/> ；
+
+（3）对于缓存数据更新机制，当某一个作用域(一级缓存 Session/二级缓存Namespaces)的进行了C/U/D 操作后，默认该作用域下所有 select 中的缓存将被 clear 掉并重新更新，如果开启了二级缓存，则只根据配置判断是否刷新。
+
+ 
+
+10、Mybatis是如何将sql执行结果封装为目标对象并返回的？都有哪些映射形式？
+
+第一种是使用<resultMap>标签，逐一定义数据库列名和对象属性名之间的映射关系。
+
+第二种是使用sql列的别名功能，将列的别名书写为对象属性名。
+
+有了列名与属性名的映射关系后，Mybatis通过反射创建对象，同时使用反射给对象的属性逐一赋值并返回，那些找不到映射关系的属性，是无法完成赋值的。
+
+ 
+
+11、Mybatis动态sql有什么用？执行原理？有哪些动态sql？
+
+Mybatis动态sql可以在Xml映射文件内，以标签的形式编写动态sql，执行原理是根据表达式的值 完成逻辑判断 并动态拼接sql的功能。
+
+Mybatis提供了9种动态sql标签：trim | where | set | foreach | if | choose | when | otherwise | bind。
+
+ 
+
+12、Xml映射文件中，除了常见的select|insert|updae|delete标签之外，还有哪些标签？
+
+<resultMap>、<parameterMap>、<sql>、<include>、<selectKey>，加上动态sql的9个标签，其中<sql>为sql片段标签，通过<include>标签引入sql片段，<selectKey>为不支持自增的主键生成策略标签。
+
+ 
+
+13、使用MyBatis的mapper接口调用时有哪些要求？
+
+ Mapper接口方法名和mapper.xml中定义的每个sql的id相同；
+ Mapper接口方法的输入参数类型和mapper.xml中定义的每个sql 的parameterType的类型相同；
+ Mapper接口方法的输出参数类型和mapper.xml中定义的每个sql的resultType的类型相同；
+ Mapper.xml文件中的namespace即是mapper接口的类路径。
+ 
+
+14、 模糊查询like语句该怎么写?
+
+第1种：在Java代码中添加sql通配符。
+
+    string wildcardname = “%smi%”;
+    list<name> names = mapper.selectlike(wildcardname);
+ 
+    <select id=”selectlike”>
+     select * from foo where bar like #{value}
+    </select>
+第2种：在sql语句中拼接通配符，会引起sql注入
+
+    string wildcardname = “smi”;
+    list<name> names = mapper.selectlike(wildcardname);
+ 
+    <select id=”selectlike”>
+         select * from foo where bar like "%"${value}"%"
+    </select>
+ 
+
+15、当实体类中的属性名和表中的字段名不一样 ，怎么办 ？
+
+第1种： 通过在查询的sql语句中定义字段名的别名，让字段名的别名和实体类的属性名一致。
+
+    <select id=”selectorder” parametertype=”int” resultetype=”me.gacl.domain.order”>
+       select order_id id, order_no orderno ,order_price price form orders where order_id=#{id};
+    </select>
+第2种： 通过<resultMap>来映射字段名和实体类属性名的一一对应的关系。
+
+ <select id="getOrder" parameterType="int" resultMap="orderresultmap">
+        select * from orders where order_id=#{id}
+    </select>
+ 
+   <resultMap type=”me.gacl.domain.order” id=”orderresultmap”>
+        <!–用id属性来映射主键字段–>
+        <id property=”id” column=”order_id”>
+ 
+        <!–用result属性来映射非主键字段，property为实体类属性名，column为数据表中的属性–>
+        <result property = “orderno” column =”order_no”/>
+        <result property=”price” column=”order_price” />
+    </reslutMap>
+ 
+
+16、如何获取自动生成的(主)键值?
+
+insert 方法总是返回一个int值 ，这个值代表的是插入的行数。
+
+如果采用自增长策略，自动生成的键值在 insert 方法执行完后可以被设置到传入的参数对象中。
+
+<insert id=”insertname” usegeneratedkeys=”true” keyproperty=”id”>
+     insert into names (name) values (#{name})
+</insert>
+    name name = new name();
+    name.setname(“fred”);
+ 
+    int rows = mapper.insertname(name);
+    // 完成后,id已经被设置到对象中
+    system.out.println(“rows inserted = ” + rows);
+    system.out.println(“generated key value = ” + name.getid());
+ 
+
+17、在mapper中如何传递多个参数?
+
+（1）第一种：
+//DAO层的函数
+Public UserselectUser(String name,String area);  
+//对应的xml,#{0}代表接收的是dao层中的第一个参数，#{1}代表dao层中第二参数，更多参数一致往后加即可。
+<select id="selectUser"resultMap="BaseResultMap">  
+    select *  fromuser_user_t   whereuser_name = #{0} anduser_area=#{1}  
+</select>  
+ 
+（2）第二种： 使用 @param 注解:
+public interface usermapper {
+   user selectuser(@param(“username”) string username,@param(“hashedpassword”) string hashedpassword);
+}
+然后,就可以在xml像下面这样使用(推荐封装为一个map,作为单个参数传递给mapper):
+<select id=”selectuser” resulttype=”user”>
+         select id, username, hashedpassword
+         from some_table
+         where username = #{username}
+         and hashedpassword = #{hashedpassword}
+</select>
+ 
+（3）第三种：多个参数封装成map
+try{
+//映射文件的命名空间.SQL片段的ID，就可以调用对应的映射文件中的SQL
+//由于我们的参数超过了两个，而方法中只有一个Object参数收集，因此我们使用Map集合来装载我们的参数
+Map<String, Object> map = new HashMap();
+     map.put("start", start);
+     map.put("end", end);
+     return sqlSession.selectList("StudentID.pagination", map);
+ }catch(Exception e){
+     e.printStackTrace();
+     sqlSession.rollback();
+    throw e; }
+finally{
+ MybatisUtil.closeSqlSession();
+ }
+ 
+
+18、 一对一、一对多的关联查询 ？ 
+
+<mapper namespace="com.lcb.mapping.userMapper">  
+    <!--association  一对一关联查询 -->  
+    <select id="getClass" parameterType="int" resultMap="ClassesResultMap">  
+        select * from class c,teacher t where c.teacher_id=t.t_id and c.c_id=#{id}  
+    </select>  
+ 
+    <resultMap type="com.lcb.user.Classes" id="ClassesResultMap">  
+        <!-- 实体类的字段名和数据表的字段名映射 -->  
+        <id property="id" column="c_id"/>  
+        <result property="name" column="c_name"/>  
+        <association property="teacher" javaType="com.lcb.user.Teacher">  
+            <id property="id" column="t_id"/>  
+            <result property="name" column="t_name"/>  
+        </association>  
+    </resultMap>  
+ 
+ 
+    <!--collection  一对多关联查询 -->  
+    <select id="getClass2" parameterType="int" resultMap="ClassesResultMap2">  
+        select * from class c,teacher t,student s where c.teacher_id=t.t_id and c.c_id=s.class_id and c.c_id=#{id}  
+    </select>  
+ 
+    <resultMap type="com.lcb.user.Classes" id="ClassesResultMap2">  
+        <id property="id" column="c_id"/>  
+        <result property="name" column="c_name"/>  
+        <association property="teacher" javaType="com.lcb.user.Teacher">  
+            <id property="id" column="t_id"/>  
+            <result property="name" column="t_name"/>  
+        </association>  
+ 
+        <collection property="student" ofType="com.lcb.user.Student">  
+            <id property="id" column="s_id"/>  
+            <result property="name" column="s_name"/>  
+        </collection>  
+    </resultMap>  
+</mapper> 
+ 
+
+19、MyBatis实现一对一有几种方式?具体怎么操作的？
+
+有联合查询和嵌套查询,联合查询是几个表联合查询,只查询一次, 通过在resultMap里面配置association节点配置一对一的类就可以完成；
+
+嵌套查询是先查一个表，根据这个表里面的结果的 外键id，去再另外一个表里面查询数据,也是通过association配置，但另外一个表的查询通过select属性配置。
+
+ 
+
+20、MyBatis实现一对多有几种方式,怎么操作的？
+
+        有联合查询和嵌套查询。联合查询是几个表联合查询,只查询一次,通过在resultMap里面的collection节点配置一对多的类就可以完成；嵌套查询是先查一个表,根据这个表里面的 结果的外键id,去再另外一个表里面查询数据,也是通过配置collection,但另外一个表的查询通过select节点配置。
+
+ 
+
+21、Mapper编写有哪几种方式？
+
+第一种：接口实现类继承SqlSessionDaoSupport：使用此种方法需要编写mapper接口，mapper接口实现类、mapper.xml文件。
+
+（1）在sqlMapConfig.xml中配置mapper.xml的位置
+<mappers>
+    <mapper resource="mapper.xml文件的地址" />
+    <mapper resource="mapper.xml文件的地址" />
+</mappers>
+（2）定义mapper接口
+（3）实现类集成SqlSessionDaoSupport
+mapper方法中可以this.getSqlSession()进行数据增删改查。
+（4）spring 配置
+<bean id=" " class="mapper接口的实现">
+    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+</bean> 
+
+ 第二种：使用org.mybatis.spring.mapper.MapperFactoryBean：
+
+（1）在sqlMapConfig.xml中配置mapper.xml的位置，如果mapper.xml和mappre接口的名称相同且在同一个目录，这里可以不用配置
+<mappers>
+    <mapper resource="mapper.xml文件的地址" />
+    <mapper resource="mapper.xml文件的地址" />
+</mappers>
+（2）定义mapper接口：
+①mapper.xml中的namespace为mapper接口的地址
+②mapper接口中的方法名和mapper.xml中的定义的statement的id保持一致
+③Spring中定义
+<bean id="" class="org.mybatis.spring.mapper.MapperFactoryBean">
+    <property name="mapperInterface"   value="mapper接口地址" /> 
+    <property name="sqlSessionFactory" ref="sqlSessionFactory" /> 
+</bean>
+
+第三种：使用mapper扫描器：
+
+（1）mapper.xml文件编写：
+mapper.xml中的namespace为mapper接口的地址；
+mapper接口中的方法名和mapper.xml中的定义的statement的id保持一致；
+如果将mapper.xml和mapper接口的名称保持一致则不用在sqlMapConfig.xml中进行配置。 
+（2）定义mapper接口：
+注意mapper.xml的文件名和mapper的接口名称保持一致，且放在同一个目录
+（3）配置mapper扫描器：
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="mapper接口包地址"></property>
+    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/> 
+</bean>
+（4）使用扫描器后从spring容器中获取mapper的实现对象。
+
+ 
+
+22、什么是MyBatis的接口绑定？有哪些实现方式？
+
+接口绑定，就是在MyBatis中任意定义接口,然后把接口里面的方法和SQL语句绑定, 我们直接调用接口方法就可以,这样比起原来了SqlSession提供的方法我们可以有更加灵活的选择和设置。
+
+接口绑定有两种实现方式,一种是通过注解绑定，就是在接口的方法上面加上 @Select、@Update等注解，里面包含Sql语句来绑定；另外一种就是通过xml里面写SQL来绑定, 在这种情况下,要指定xml映射文件里面的namespace必须为接口的全路径名。当Sql语句比较简单时候,用注解绑定, 当SQL语句比较复杂时候,用xml绑定,一般用xml绑定的比较多。
+
+ 
+
+23、MyBatis与Hibernate有哪些不同？
+
+（1）Mybatis和hibernate不同，它不完全是一个ORM框架，因为MyBatis需要程序员自己编写Sql语句。
+
+（2）Mybatis直接编写原生态sql，可以严格控制sql执行性能，灵活度高，非常适合对关系数据模型要求不高的软件开发，因为这类软件需求变化频繁，一但需求变化要求迅速输出成果。但是灵活的前提是mybatis无法做到数据库无关性，如果需要实现支持多种数据库的软件，则需要自定义多套sql映射文件，工作量大。 
+
+（3）Hibernate对象/关系映射能力强，数据库无关性好，对于关系模型要求高的软件，如果用hibernate开发可以节省很多代码，提高效率。
+
+https://blog.csdn.net/a745233700/article/details/80977133
+
+
+
+7、Mybatis执行批量插入，能返回数据库主键列表吗？
+能，JDBC都能，Mybatis当然也能。
+
+1、对于支持生成自增主键的数据库：增加 useGenerateKeys和keyProperty ，<insert>标签属性。
+
+2、不支持生成自增主键的数据库：使用<selectKey>。
+
+8、Mybatis动态sql是做什么的？都有哪些动态sql？能简述一下动态sql的执行原理不？
+答：Mybatis动态sql可以让我们在Xml映射文件内，以标签的形式编写动态sql，完成逻辑判断和动态拼接sql的功能，
+Mybatis提供了9种动态sql标签trim|where|set|foreach|if|choose|when|otherwise|bind。
+
+其执行原理为，使用OGNL从sql参数对象中计算表达式的值，根据表达式的值动态拼接sql，以此来完成动态sql的功能。
+
+
+13、Mybatis都有哪些Executor执行器？它们之间的区别是什么？
+
+答：Mybatis有三种基本的Executor执行器，SimpleExecutor、ReuseExecutor、BatchExecutor。
+
+SimpleExecutor：每执行一次update或select，就开启一个Statement对象，用完立刻关闭Statement对象。
+
+ReuseExecutor：执行update或select，以sql作为key查找Statement对象，存在就使用，不存在就创建，用完后，不关闭Statement对象，而是放置于Map<String, Statement>内，供下一次使用。
+简言之，就是重复使用Statement对象。
+
+BatchExecutor：执行update（没有select，JDBC批处理不支持select），将所有sql都添加到批处理中（addBatch()），等待统一执行（executeBatch()），它缓存了多个Statement对象，
+每个Statement对象都是addBatch()完毕后，等待逐一执行executeBatch()批处理。与JDBC批处理相同。
+
+作用范围：Executor的这些特点，都严格限制在SqlSession生命周期范围内。
+
+
+
+
+当实体类中的属性名和表中的字段名不一样 ，怎么办 ？
+
+第1种： 通过在查询的sql语句中定义字段名的别名，让字段名的别名和实体类的属性名一致 
+1
+    <select id=”selectorder” parametertype=”int” resultetype=”me.gacl.domain.order”> 
+       select order_id id, order_no orderno ,order_price price form orders where order_id=#{id}; 
+    </select> 
+1
+2
+3
+第2种： 通过<resultMap>来映射字段名和实体类属性名的一一对应的关系 
+1
+    <select id="getOrder" parameterType="int" resultMap="orderresultmap">
+        select * from orders where order_id=#{id}
+    </select>
+   <resultMap type=”me.gacl.domain.order” id=”orderresultmap”> 
+        <!–用id属性来映射主键字段–> 
+        <id property=”id” column=”order_id”> 
+        <!–用result属性来映射非主键字段，property为实体类属性名，column为数据表中的属性–> 
+        <result property = “orderno” column =”order_no”/> 
+        <result property=”price” column=”order_price” /> 
+    </reslutMap>
+	
+	
+如何执行批量插入?
+首先,创建一个简单的insert语句: 
+1
+    <insert id=”insertname”> 
+     insert into names (name) values (#{value}) 
+    </insert>
+
+然后在java代码中像下面这样执行批处理插入: 
+1
+    list<string> names = new arraylist(); 
+    names.add(“fred”); 
+    names.add(“barney”); 
+    names.add(“betty”); 
+    names.add(“wilma”); 
+
+    // 注意这里 executortype.batch 
+    sqlsession sqlsession = sqlsessionfactory.opensession(executortype.batch); 
+    try { 
+     namemapper mapper = sqlsession.getmapper(namemapper.class); 
+     for (string name : names) { 
+     mapper.insertname(name); 
+     } 
+     sqlsession.commit(); 
+    } finally { 
+     sqlsession.close(); 
+    }
+
+如何获取自动生成的(主)键值?
+
+insert 方法总是返回一个int值 - 这个值代表的是插入的行数。 
+而自动生成的键值在 insert 方法执行完后可以被设置到传入的参数对象中。 
+示例: 
+1
+2
+3
+    <insert id=”insertname” usegeneratedkeys=”true” keyproperty=”id”> 
+     insert into names (name) values (#{name}) 
+    </insert>
+
+    name name = new name(); 
+    name.setname(“fred”); 
+
+    int rows = mapper.insertname(name); 
+    // 完成后,id已经被设置到对象中 
+    system.out.println(“rows inserted = ” + rows); 
+    system.out.println(“generated key value = ” + name.getid())
+	
+	
+在mapper中如何传递多个参数?
+
+//DAO层的函数
+
+Public UserselectUser(String name,String area);  
+1
+2
+3
+//对应的xml,#{0}代表接收的是dao层中的第一个参数，#{1}代表dao层中第二参数，更多参数一致往后加即可。
+
+<select id="selectUser"resultMap="BaseResultMap">  
+    select *  fromuser_user_t   whereuser_name = #{0} anduser_area=#{1}  
+</select>  
+1
+2
+3
+4
+5
+第2种：    使用 @param 注解: 
+1
+    import org.apache.ibatis.annotations.param; 
+        public interface usermapper { 
+         user selectuser(@param(“username”) string username, 
+         @param(“hashedpassword”) string hashedpassword); 
+        }
+
+然后,就可以在xml像下面这样使用(推荐封装为一个map,作为单个参数传递给mapper): 
+1
+    <select id=”selectuser” resulttype=”user”> 
+         select id, username, hashedpassword 
+         from some_table 
+         where username = #{username} 
+         and hashedpassword = #{hashedpassword} 
+    </select>
+
+	
+注解：
+@Component ：标准一个普通的spring Bean类。
+
+@Repository：标注一个DAO组件类。
+
+@Service：标注一个业务逻辑组件类。
+
+@Controller：标注一个控制器组件类。
+
+这些都是注解在平时的开发过程中出镜率极高，@Component、@Repository、@Service、@Controller实质上属于同一类注解，用法相同，功能相同，区别在于标识组件的类型。
+@Component可以代替@Repository、@Service、@Controller，因为这三个注解是被@Component标注的。
+
+装配bean时常用的注解
+@Autowired：属于Springorg.springframework.beans.factory.
+annotation包下,可用于为类的属性、构造器、方法进行注值
+@Resource：不属于spring的注解，而是来自于JSR-250位于java.annotation包下，使用该annotation为目标bean指定协作者Bean。
+@PostConstruct 和 @PreDestroy 方法 实现初始化和销毁bean之前进行的操作
+
+@Component vs @Configuration and @Bean
+Spring的官方团队说@Component可以替代 @Configuration注解
+
+
+Bean注解主要用于方法上，有点类似于工厂方法，当使用了@Bean注解，我们可以连续使用多种定义bean时用到的注解，譬如用@Qualifier注解定义工厂方法的名称，
+用@Scope注解定义该bean的作用域范围，譬如是singleton还是prototype等。
+
+Spring 中新的 Java 配置支持的核心就是@Configuration 注解的类。这些类主要包括 @Bean 注解的方法来为 Spring 的 IoC 容器管理的对象定义实例，配置和初始化逻辑。
+使用@Configuration 来注解类表示类可以被 Spring 的 IoC 容器所使用，作为 bean 定义的资源。
+@Configuration
+public class AppConfig {
+    @Bean
+    public MyService myService() {
+        return new MyServiceImpl();
+    }
+}
+
+@Configuation总结
+ @Configuation等价于<Beans></Beans>
+
+ @Bean等价于<Bean></Bean>
+
+ @ComponentScan等价于<context:component-scan base-package="com.dxz.demo"/>
+
+
+
+
+
