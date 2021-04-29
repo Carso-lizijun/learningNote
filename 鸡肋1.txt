@@ -1335,11 +1335,7 @@ cbx 权限认证:
 spring security基于Filter过滤器:充分利用了Spring IoC，DI(控制反转Inversion of Control ,DI:Dependency Injection 依赖注入)和AOP(面向切面编程)功能
 SpringSecurity 是一个安全框架，那它提供了哪些安全措施呢?主要是三个方面，
 
-· 身份认证(你是谁?)
-
-· 权限校验(你能做什么?允许操作的范围)
-
-· 攻击防护(防止伪造身份)
+· 身份认证(你是谁?)· 权限校验(你能做什么?允许操作的范围)· 攻击防护(防止伪造身份)
 说说Security 流程
 
 1、 首先， 当用户登录时， 前端会把用户输入的用户名、 密码信息传输到后台， 后台用一个类对象将其封装起来，
@@ -1362,13 +1358,16 @@ SpringSecurity 是一个安全框架，那它提供了哪些安全措施呢?主�
 
 
 Spring Security 的重要性
-在web应用开发中，安全无疑是十分重要的，选择Spring Security来保护web应用是一个非常好的选择。Spring Security 是spring项目之中的一个安全模块，特别是在spring boot项目中，spring security已经默认集成和启动了。
+在web应用开发中，安全无疑是十分重要的，选择Spring Security来保护web应用是一个非常好的选择。
+Spring Security 是spring项目之中的一个安全模块，特别是在spring boot项目中，spring security已经默认集成和启动了。
 
 Spring Security 默认为自动开启的，可见其重要性。
 
 如果要关闭，需要在启动类加上，exclude ={SecurityAutoConfiguration} 的配置
 
 https://www.cnblogs.com/demingblog/p/10874753.html
+
+https://blog.csdn.net/u012702547/article/details/89629415
 
 
 
