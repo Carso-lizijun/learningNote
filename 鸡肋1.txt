@@ -1331,30 +1331,57 @@ cbx旧的UI View里面怎么做到分页的？
 
 JVM基础：
 
-cbx 权限认证:
+cbx 权限认证:https://www.cnblogs.com/demingblog/p/10874753.html
 spring security基于Filter过滤器:充分利用了Spring IoC，DI(控制反转Inversion of Control ,DI:Dependency Injection 依赖注入)和AOP(面向切面编程)功能
-SpringSecurity 是一个安全框架，那它提供了哪些安全措施呢?主要是三个方面，
 
-· 身份认证(你是谁?)· 权限校验(你能做什么?允许操作的范围)· 攻击防护(防止伪造身份)
-说说Security 流程
 
-1、 首先， 当用户登录时， 前端会把用户输入的用户名、 密码信息传输到后台， 后台用一个类对象将其封装起来，
+我们可以得知，spring security 在web应用中是基于filter的。filter我们就很熟了，在没有struts,没有spring mvc之前，我们就是通过一个个servlet,
+一个个filter来实现业务功能的，通常我们会有多个filter，他们按序执行，一个执行完之后，调用filterChain中的下一个doFilter。
 
-通常使用的是UsernamePasswordAuthenticationToken这个类。
+spring security 维护了一个filter chain，chain中的每一个filter都具有特定的责任，并根据所需的服务在配置总添加。
+filter的顺序很重要，因为他们之间存在依赖关系。
 
-2、 再来， 到程序负责验证这个类对象。 验证方法是调用Service根据username从数据库中取用户信息到实体类的实例中，
+spring security入口——springSecurityFilterChain。
+实际的过滤工作是springSecurityFilterChain处理。
+在使用spring boot之后，通过跟踪源码可以发现@EnableWebSecurity会加载WebSecurityConfiguration类,而WebSecurityConfiguration类中就有创建springSecurityFilterChain这个Filter的代码
 
-比较两者的密码， 如果密码正确就成功登陆， 同时把包含着用户的用户名、 密码、 所具有的权限等信息的类对象
+spring security 的核心是基于filter入口filter是springSecurityFilterChain(它会被DelegatingFilterProxy委托来执行过滤任务)
+springSecurityFilterChain实际上是FilterChainProxy （一个filter）
+FilterChainProxy里边有一个SecurityFilterChain集合，doFIlter()的时候会从其中取。
+到这里，思路清楚多了，现在还不知道SecurityFilterChain是怎么来的。SecurityFilterChain就是webSecurity里边具体是在WebSecurityConfiguration类中。
 
-放到SecurityContextHolder(安全上下文容器， 类似Session) 中去。
 
-3、 其次， 在用户访问一个资源的时候， 需要先判断是否是受限资源。 如果是的话还要判断当前是否未登录，
+Spring Security 的一些实战：
+自定义UserDetailsService
+前面我们提到过，UserDetailsService，spring security在认证过程中需要查找用户，会调用UserDetailsService的loadUserByUsername方法得到一个UserDetails，下面我们来实现他。
+@Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException 
+这个方法做了2件事情，查询用户以及设置角色。
 
-没有的话就跳到登录页面。
+加入CustomUserDetailsServicebean配置到WebSecurityConfigurerAdapter的子类
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter	
+覆盖两个configure方法
+授权状态和session是挂钩的。即这时spring security使用了session。
+前后端分离应用中自定义token整合spring security
+实际中我们的前后端分离项目都是无状态的，并没有登录状态保持，服务器通过客户端调用传递的token来识别调用者是谁。
+从登录发token开始，这里需要使用到UsernamePasswordAuthenticationToken,以及SecurityContextHolder
+public Token authorize(@RequestParam String username, @RequestParam String password) {
+可以自定义Token
 
-4、 最后!如果用户已经登录， 并访问一个受限资源的时候， 程序要根据url去数据库中取出该资源所对应的
 
-所有可以访问的角色， 然后拿着当前用户的所有角色一一对比， 判断用户是否可以访问
+
+https://blog.csdn.net/u012702547/article/details/89629415
+流程说明
+客户端发起一个请求，进入 Security 过滤器链。
+
+当到 LogoutFilter 的时候判断是否是登出路径，如果是登出路径则到 logoutHandler ，如果登出成功则到 logoutSuccessHandler 登出成功处理，
+如果登出失败则由 ExceptionTranslationFilter ；如果不是登出路径则直接进入下一个过滤器。
+
+当到 UsernamePasswordAuthenticationFilter 的时候判断是否为登录路径，如果是，则进入该过滤器进行登录操作，
+如果登录失败则到 AuthenticationFailureHandler 登录失败处理器处理，如果登录成功则到 AuthenticationSuccessHandler 登录成功处理器处理，如果不是登录请求则不进入该过滤器。
+
+当到 FilterSecurityInterceptor 的时候会拿到 uri ，根据 uri 去找对应的鉴权管理器，鉴权管理器做鉴权工作，鉴权成功则到 Controller 层否则到 AccessDeniedHandler 鉴权失败处理器处理。
 
 
 Spring Security 的重要性
@@ -1370,6 +1397,39 @@ https://www.cnblogs.com/demingblog/p/10874753.html
 https://blog.csdn.net/u012702547/article/details/89629415
 
 
+什么是拦截器
+在AOP中用于在某个方法或字段被访问之前，进行拦截然后再之前货之后加入某些操作。拦截是AOP的一种实现策略。
+拦截器是动态拦截Action调用的对象。它提供了一种机制可以使开发者定义一个action前后执行的代码，也可以在一个action执行阻止其执行，同时也是提供了一种可以提取action可重用部分的方式。
+实现原理：大部分是通过代理的方式来调用的。
+自定义拦截器步骤：
+自定义一个实现了Interceptor接口的类，或者继承抽象类AbstractInterceptor。
+在配置文件中注册定义的拦截器。
+在需要使用Action中引入定义的拦截器，为了方便也可以把拦截器定义为默认的拦截器。所有的Action都会被这个拦截器拦截
+什么是过滤器？
+过滤器是一个程序，他先于与之相关的servlet或jsp也可以运行在服务器上。过滤器可附加到一个或多个servlet或jsp页面上，并且可以检查进入这些资源的请求信息。
+以常规的方式调用资源
+利用修改过的请求信息调用资源
+调用资源，但在发送响应到客户机前对其进行修改
+阻止该资源调用，代之以转到其他的资源，返回一个特定的状态代码或生成替换输出。
+过滤器的基本原理：在Servlet作为过滤器使用时，他可以对客户的请求进行处理。处理完成后，他会交给下一个过滤器处理，这样，客户的请求在过滤器链中逐个处理，直到请求发送到目标为止。
+拦截器与过滤器的区别
+拦截器是基于java的反射机制的，而过滤器是基本函数回调。
+拦截器不依赖于servlet容器，过滤器依赖于servlet容器
+拦截器只能对action请求起作用，过滤器可以对几乎所有的请求起作用
+拦截器可以访问action上下文、值栈里的对象，而过滤器不能访问
+在action的生命周期中，拦截器可以被多次调用，而过滤器只能在容器初始化时被调用过一次。
+过滤器（Filter）：所谓过滤器顾名思义是用来过滤的，Java的过滤器能够为我们提供系统级别的过滤，也就是说，能过滤所有的web请求，这一点，是拦截器无法做到的。在Java Web中，你传入request,response提前过滤掉一些信息，
+或者提前设置一些参数，然后再传入servlet或者struts的action进行业务逻辑，比如过滤掉非法url（不是login.do的地址请求，如果用户没有登陆都过滤掉）,或者在传入servlet或者struts的action前统一设置字符集，
+或者去除掉一些非法字符（聊天室经常用到的，一些骂人的话）。filter 流程是线性的，url传来之后，检查之后，可保持原来的流程继续向下执行，被下一个filter, servlet接收。
+监听器（Listener）：Java的监听器，也是系统级别的监听。监听器随web应用的启动而启动。Java的监听器在c/s模式里面经常用到，它会对特定的事件产生产生一个处理。监听在很多模式下用到，
+比如说观察者模式，就是一个使用监听器来实现的，在比如统计网站的在线人数。又比如struts2可以用监听来启动。Servlet监听器用于监听一些重要事件的发生，监听器对象可以在事情发生前、发生后可以做一些必要的处理。
+拦截器（Interceptor）：java里的拦截器提供的是非系统级别的拦截，也就是说，就覆盖面来说，拦截器不如过滤器强大，但是更有针对性。Java中的拦截器是基于Java反射机制实现的，更准确的划分，
+应该是基于JDK实现的动态代理。它依赖于具体的接口，在运行期间动态生成字节码。拦截器是动态拦截Action调用的对象，它提供了一种机制可以使开发者在一个Action执行的前后执行一段代码，
+也可以在一个Action执行前阻止其执行，同时也提供了一种可以提取Action中可重用部分代码的方式。在AOP中，拦截器用于在某个方法或者字段被访问之前，进行拦截然后再之前或者之后加入某些操作。
+java的拦截器主要是用在插件上，扩展件上比如 Hibernate Spring Struts2等，有点类似面向切片的技术，在用之前先要在配置文件即xml，文件里声明一段的那个东西。
+
+一个AOP简单例子：
+https://blog.csdn.net/l707268743/article/details/79339746
 
 
 
@@ -1396,16 +1456,13 @@ https://blog.csdn.net/jiangyu1013/article/details/84397366
  
 1) 事务开始时，通过AOP机制，生成一个代理connection对象，
    并将其放入 DataSource 实例的某个与 DataSourceTransactionManager 相关的某处容器中。
-   在接下来的整个事务中，客户代码都应该使用该 connection 连接数据库，
-   执行所有数据库命令。
+   在接下来的整个事务中，客户代码都应该使用该 connection 连接数据库，执行所有数据库命令。
    [不使用该 connection 连接数据库执行的数据库命令，在本事务回滚的时候得不到回滚]
   （物理连接 connection 逻辑上新建一个会话session；
    DataSource 与 TransactionManager 配置相同的数据源）
  
 2) 事务结束时，回滚在第1步骤中得到的代理 connection 对象上执行的数据库命令，
-   然后关闭该代理 connection 对象。
-  （事务结束后，回滚操作不会对已执行完毕的SQL操作命令起作用）
-Spring 关闭数据库中自动提交：在方法执行前关闭自动提交，方法执行完毕后再开启自动提交
+   然后关闭该代理 connection 对象。（事务结束后，回滚操作不会对已执行完毕的SQL操作命令起作用）
 
  spring 事务特性
 spring 所有的事务管理策略类都继承自 org.springframework.transaction.PlatformTransactionManager 接口
@@ -1442,26 +1499,32 @@ spring事务：
    
 异常:
 所有的类都是从Throwable继承而来，下一层则分为两个结构，Error和Exception。
-其中Error类层次描述了Java运行时系统的内部错误和资源耗尽错误，这种错误除了简单的报告给用户，并尽力阻止程序安全终止之外，一般也米有别的解决办法了。   
+其中Error类层次描述了Java运行时系统的内部错误和资源耗尽错误，这种错误除了简单的报告给用户，并尽力阻止程序安全终止之外，一般也没有别的解决办法了。   
 Exception（异常）分两大类：运行时异常和非运行时异常(编译异常)。程序中应当尽可能去处理这些异常。
-      1.运行时异常：都是RuntimeException类及其子类异常，如NullPointerException(空指针异常)、IndexOutOfBoundsException(下标越界异常)等，这些异常是不检查异常，程序中可以选择捕获处理，也可以不处理。这些异常一般是由程序逻辑错误引起的，程序应该从逻辑角度尽可能避免这类异常的发生。运行时异常的特点是Java编译器不会检查它，也就是说，当程序中可能出现这类异常，即使没有用try-catch语句捕获它，也没有用throws子句声明抛出它，也会编译通过。
-      2.非运行时异常 （编译异常）：是RuntimeException以外的异常，类型上都属于Exception类及其子类。从程序语法角度讲是必须进行处理的异常，如果不处理，程序就不能编译通过。如IOException、SQLException等以及用户自定义的Exception异常，一般情况下不自定义检查异常。
-  1. 可查异常（编译器要求必须处置的异常）：正确的程序在运行中，很容易出现的、情理可容的异常状况。除了Exception中的RuntimeException及RuntimeException的子类以外，其他的Exception类及其子类(例如：IOException和ClassNotFoundException)都属于可查异常。这种异常的特点是Java编译器会检查它，也就是说，当程序中可能出现这类异常，要么用try-catch语句捕获它，要么用throws子句声明抛出它，否则编译不会通过。
-      2. 不可查异常(编译器不要求强制处置的异常):包括运行时异常（RuntimeException与其子类）和错误（Error）。RuntimeException表示编译器不会检查程序是否对RuntimeException作了处理，在程序中不必捕获RuntimException类型的异常，也不必在方法体声明抛出RuntimeException类。RuntimeException发生的时候，表示程序中出现了编程错误，所以应该找出错误修改程序，而不是去捕获RuntimeException。
+  1.运行时异常：都是RuntimeException类及其子类异常，如NullPointerException(空指针异常)、IndexOutOfBoundsException(下标越界异常)等，这些异常是不检查异常，程序中可以选择捕获处理，也可以不处理。
+这些异常一般是由程序逻辑错误引起的，程序应该从逻辑角度尽可能避免这类异常的发生。运行时异常的特点是Java编译器不会检查它，也就是说，当程序中可能出现这类异常，即使没有用try-catch语句捕获它，
+也没有用throws子句声明抛出它，也会编译通过。
+ 2.非运行时异常 （编译异常）：是RuntimeException以外的异常，类型上都属于Exception类及其子类。从程序语法角度讲是必须进行处理的异常，如果不处理，程序就不能编译通过。
+		如IOException、SQLException等以及用户自定义的Exception异常，一般情况下不自定义检查异常。
+  1. 可查异常（编译器要求必须处置的异常）：正确的程序在运行中，很容易出现的、情理可容的异常状况。除了Exception中的RuntimeException及RuntimeException的子类以外，
+ 其他的Exception类及其子类(例如：IOException和ClassNotFoundException)都属于可查异常。这种异常的特点是Java编译器会检查它，也就是说，当程序中可能出现这类异常，
+ 要么用try-catch语句捕获它，要么用throws子句声明抛出它，否则编译不会通过。
+  2. 不可查异常(编译器不要求强制处置的异常):包括运行时异常（RuntimeException与其子类）和错误（Error）。RuntimeException表示编译器不会检查程序是否对RuntimeException作了处理，
+在程序中不必捕获RuntimException类型的异常，也不必在方法体声明抛出RuntimeException类。RuntimeException发生的时候，表示程序中出现了编程错误，所以应该找出错误修改程序，而不是去捕获RuntimeException。
 
  对于错误、运行时异常、可查异常，Java技术所要求的异常处理方式有所不同。
       1. 错误：对于方法运行中可能出现的Error，当运行方法不欲捕捉时，Java允许该方法不做任何抛出声明。因为，大多数Error异常属于永远不能被允许发生的状况，也属于合理的应用程序不该捕捉的异常。
       2. 运行时异常：由于运行时异常的不可查性，为了更合理、更容易地实现应用程序，Java规定，运行时异常将由Java运行时系统自动抛出，允许应用程序忽略运行时异常。
       3. 可查异常：对于所有的可查异常，Java规定：一个方法必须捕捉，或者声明抛出方法之外。也就是说，当一个方法选择不捕捉可查异常时，它必须声明将抛出异常。
 
-        能够捕捉异常的方法，需要提供相符类型的异常处理器。所捕捉的异常，可能是由于自身语句所引发并抛出的异常，也可能是由某个调用的方法或者Java运行时 系统等抛出的异常。也就是说，一个方法所能捕捉的异常，一定是Java代码在某处所抛出的异常。简单地说，异常总是先被抛出，后被捕捉的。
+        能够捕捉异常的方法，需要提供相符类型的异常处理器。所捕捉的异常，可能是由于自身语句所引发并抛出的异常，也可能是由某个调用的方法或者Java运行时 系统等抛出的异常。
+也就是说，一个方法所能捕捉的异常，一定是Java代码在某处所抛出的异常。简单地说，异常总是先被抛出，后被捕捉的。
         异常抛出：任何Java代码都可以抛出异常，如：自己编写的代码、来自Java开发环境包中代码，或者Java运行时系统。无论是谁，都可以通过Java的throw语句抛出异常。从方法中抛出的任何异常都必须使用throws子句。
         异常捕获：捕捉异常通过try-catch语句或者try-catch-finally语句实现。
         总体来说，Java规定：对于可查异常必须捕捉、或者声明抛出。允许忽略不可查的RuntimeException和Error。
 Java常见异常
       1. RuntimeException子类: ArrayIndexOutOfBoundsException  NullPointerException
 	
-
 
 
 1、什么是Spring Boot？
