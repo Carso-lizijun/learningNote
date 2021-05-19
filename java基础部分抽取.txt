@@ -1,0 +1,885 @@
+注解：
+@Component ：标准一个普通的spring Bean类。@Repository：标注一个DAO组件类。
+@Service：标注一个业务逻辑组件类。@Controller：标注一个控制器组件类。
+这些都是注解在平时的开发过程中出镜率极高，@Component、@Repository、@Service、@Controller实质上属于同一类注解，用法相同，功能相同，区别在于标识组件的类型。
+@Component可以代替@Repository、@Service、@Controller，因为这三个注解是被@Component标注的。
+
+
+装配bean时常用的注解
+@Autowired：属于Springorg.springframework.beans.factory.
+annotation包下,可用于为类的属性、构造器、方法进行注值
+@Resource：不属于spring的注解，而是来自于JSR-250位于java.annotation包下，使用该annotation为目标bean指定协作者Bean。
+@PostConstruct 和 @PreDestroy 方法 实现初始化和销毁bean之前进行的操作
+
+@Component vs @Configuration and @Bean
+Spring的官方团队说@Component可以替代 @Configuration注解
+
+Bean注解主要用于方法上，有点类似于工厂方法，当使用了@Bean注解，我们可以连续使用多种定义bean时用到的注解，譬如用@Qualifier注解定义工厂方法的名称，
+用@Scope注解定义该bean的作用域范围，譬如是singleton还是prototype等。
+
+Spring 中新的 Java 配置支持的核心就是@Configuration 注解的类。这些类主要包括 @Bean 注解的方法来为 Spring 的 IoC 容器管理的对象定义实例，配置和初始化逻辑。
+使用@Configuration 来注解类表示类可以被 Spring 的 IoC 容器所使用，作为 bean 定义的资源。
+@Configuration
+public class AppConfig {
+    @Bean
+    public MyService myService() {
+        return new MyServiceImpl();
+    }
+}
+
+@Configuation总结   @Configuation等价于<Beans></Beans>
+@Bean等价于<Bean></Bean>
+@ComponentScan等价于<context:component-scan base-package="com.dxz.demo"/>
+
+
+
+java:
+1,java String占多少字节
+“java中一个int占4个字节,由于java是unicode编码,一个char可以占两个字节。
+
+Java采用unicode来表示字符，java中的一个char是2个字节，一个中文或英文字符的unicode编码都占2个字节，但如果采用其他编码方式，一个字符占用的字节数则各不相同。
+在GBK 编码中，一个英文字母字符存储需要1个字节，一个汉子字符存储需要2个字节。在UTF-8编码中，一个英文字母字符存储需要1个字节，一个汉字字符储存需要3到4个字节。
+
+一个String,最大约等于384M的内存
+https://blog.csdn.net/zp357252539/article/details/108542707
+java中，局部变量，没有默认值，如果在声明时，未赋值，在接下来的程序中直接使用该变量的值将由编译器检查出错误。（包装类也一样）
+
+而与之相对的是成员变量（也叫类成员），如果是八种基本数据类型（byte, short, int, long, float, double, boolean, char，在没有被手动赋值的却在程序中被使用的情况下，将被赋予初值：
+如果是 byte,short,int,long初值为0
+而float,double则为0.0
+至于   char则是 ' '(空格字符)
+最后是boolean   为false
+
+如果是包装类（Integer，String，Byte，Short，Character ，Long）则为null
+String null
+
+被final修饰的变量（要记得区分对象跟值），变量的指向不可变，但内容可变，对于值，当他的内容变时，指向就变了！！
+final 修饰的是实例变量，那么必须初始化，或者在构造块中，或者在构造器中，否则编译不能通过。
+final修饰的是静态变量，同样也得必须初始化，不同的是，它要么直接初始化，要么在静态块中初始化，不能在构造器中初始化，但是！！！如果没有final修饰，它又能在构造其中初始化。
+
+用final修饰的类，是不允许继承的，并不是说这个类不能变，要看情况的，下面这些看了应该有帮助：
+final int a = 1; // 这种是不能改变的，也就是你不能再执行类型 a = 2; 的语句
+final User user = new User(1, "cian", 25); // 这种也不能再执行user = new ...， 但可以user.setId(2). user.setName('arvin")。。。
+总结来说就是，你不能继续赋值，即不能给final修饰的变量执行赋值语句
+
+
+
+
+
+内部类的优点
+我们为什么要使用内部类呢？因为它有以下优点：
+一个内部类对象可以访问创建它的外部类对象的内容，包括私有数据！
+内部类不为同一包的其他类所见，具有很好的封装性；
+
+成员内部类可以访问外部类所有的变量和方法，包括静态和非静态，私有和公有。
+成员内部类依赖于外部类的实例，它的创建方式 外部类实例.new 内部类() ，外部类实例已经创建了：
+
+匿名内部类，没有名字的内部类
+new Service() {
+      public void method() {
+      }
+    }.method();
+
+//匿名内部类必须继承或实现一个已有的接口
+interface Service{
+  void method();
+}
+
+构造器（constructor）是否可被重写（override）
+构造器不能被继承，因此不能被重写，但可以被重载
+
+重载：发生在同一个类中，方法名相同参数列表不同（参数类型不同、个数不同、顺序不同），与
+方法返回值和访问修饰符无关，即重载的方法不能根据返回类型进行区分
+重写：发生在父子类中，方法名、参数列表必须相同，返回值小于等于父类，抛出的异常小于等于父类，
+访问修饰符大于等于父类（里氏代换原则）；如果父类方法访问修饰符为private则子类中就不是重写
+
+hashCode() 的作用是获取哈希码，也称为散列码；它实际上是返回一个int整数。这个哈希码的作
+用是确定该对象在哈希表中的索引位置。hashCode() 定义在JDK的Object.java中，这就意味着
+Java中的任何类都包含有hashCode()函数。比如HashSet，会先比较hashCode，如果相同，再用Equals比较。
+
+. 对象的相等与指向他们的引用相等，两者有什么不同？
+    if (a.equals(b)) // true
+      System.out.println("aEQb");
+    if (42 == 42.0) { // true
+      System.out.println("true");
+    }
+  }
+}
+对象的相等 比的是内存中存放的内容是否相等而 
+引用相等 比较的是他们指向的内存地址是否相等。
+
+当一个对象被当作参数传递到一个方法后，此方法可改变这个对象的属性，并
+可返回变化后的结果，那么这里到底是值传递还是引用传递
+是值传递。Java 语言的方法调用只支持参数的值传递
+
+
+什么是反射机制？
+JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；
+对于任意一个对象，都能够调用它的任意一个方法和属性；
+
+实现方式:静态编译和动态编译
+静态编译：在编译时确定类型，绑定对象
+动态编译：运行时确定类型，绑定对象
+
+
+1.通过new对象实现反射机制 2.通过路径实现反射机制 3.通过类名实现反射机制
+//方式一(通过建立对象)
+Student stu = new Student();
+Class classobj1 = stu.getClass();
+// 方式二 Class
+Class classobj2 = Class.forName("fanshe.Student");//需要全类名
+//方式三（通过类名）
+Class classobj3 = Student.class;
+
+
+interface fruit{  
+    public abstract void eat();  
+}  
+   
+class Apple implements fruit{  
+    public void eat(){  
+        System.out.println("Apple");  
+    }  
+}  
+   
+class Orange implements fruit{  
+    public void eat(){  
+        System.out.println("Orange");  
+    }  
+}  
+   
+class Factory{  
+    public static fruit getInstance(String ClassName){  
+        fruit f=null;  
+        try{  
+            f=(fruit)Class.forName(ClassName).newInstance();  
+        }catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+        return f;  
+    }  
+}  
+class hello{  
+    public static void main(String[] a){  
+        fruit f=Factory.getInstance("Reflect.Apple");  
+        if(f!=null){  
+            f.eat();  
+        }  
+    }  
+}  
+在出现新品种水果的时候，你完全不用去修改原有代码。
+
+
+字符型常量和字符串常量的区别
+1. 形式上: 字符常量是单引号引起的一个字符 字符串常量是双引号引起的若干个字符
+2. 含义上: 字符常量相当于一个整形值(ASCII值),可以参加表达式运算 字符串常量代表一个地址值(该
+字符串在内存中存放位置)
+3. 占内存大小 字符常量只占一个字节 字符串常量占若干个字节(至少一个字符结束标志)
+
+什么是字符串常量池？
+字符串常量池位于堆内存中，专门用来存储字符串常量，可以提高内存的使用率，避免开辟多块空
+间存储相同的字符串，在创建字符串时 JVM 会首先检查字符串常量池，如果该字符串已经存在池
+中，则返回它的引用，如果不存在，则实例化一个字符串放到池中，并返回其引用。
+
+String有哪些特性
+内容不变性：String 是只读字符串，是一个典型的 immutable 对象，对它进行任何操作，其实都是创
+建一个新的对象，再把引用指向该对象。不变模式的主要作用在于当一个对象需要被多线程共享并
+频繁访问时，可以保证数据的一致性。
+常量池优化：String 对象创建之后，会在字符串常量池中进行缓存，如果下次创建同样的对象时，
+会直接返回缓存的引用。
+final：使用 final 来定义 String 类，表示 String 类不能被继承，提高了系统的安全性。
+
+String str="i"与 String str=new String(“i”)一样吗？
+不一样，因为内存的分配方式不一样。String str="i"的方式，java 虚拟机会将其分配到常量池中；
+而 String str=new String(“i”) 则会被分到堆内存中。
+
+String s = new String(“xyz”);创建了几个字符串对象
+两个对象，一个是常量池中的"xyz"，一个是用new创建在堆上的对象。
+String str1 = "hello"; //str1指向常量池中 
+String str2 = new String("hello"); //str2指向堆上的对象
+
+如何将字符串反转？
+使用 StringBuilder 或者 stringBuffer 的 reverse() 方法。
+
+StringBuilder sb = new StringBuilder(10);
+        sb.append("Runoob..");
+        System.out.println(sb);//Runoob..  
+        sb.append("!");//
+        System.out.println(sb); //Runoob..!
+        sb.insert(8, "Java");
+        System.out.println(sb); ///Runoob..Java!
+        sb.delete(5,8);//包含5不包含8
+        System.out.println(sb); //RunooJava!
+
+
+String类中使用字符数组保存字符串，private final char value[]，所以string对象是不可变
+的。StringBuilder与StringBuffer都继承自AbstractStringBuilder类，在AbstractStringBuilder中
+也是使用字符数组保存字符串，char[] value，这两种对象都是可变的。
+线程安全性
+String中的对象是不可变的，也就可以理解为常量，线程安全。AbstractStringBuilder是
+StringBuilder与StringBuffer的公共父类，定义了一些字符串的基本操作，如expandCapacity、
+append、insert、indexOf等公共方法。
+StringBuffer对方法加了同步锁或者对调用的方法加了同
+步锁，所以是线程安全的。StringBuilder并没有对方法进行加同步锁，所以是非线程安全的。
+
+
+
+
+
+自动装箱与拆箱
+装箱：将基本类型用它们对应的引用类型包装起来；
+拆箱：将包装类型转换为基本数据类型；
+
+Java 为每个原始类型提供了包装类型：
+原始类型: boolean(1)，char(2)，byte(1)，short(2)，int(4)，long(8)，float(8)，double(8)
+包装类型：Boolean，Character，Byte，Short，Integer，Long，Float，Double
+
+ Integer a= 127 与 Integer b = 127相等吗
+对于对象引用类型：==比较的是对象的内存地址。
+对于基本数据类型：==比较的是值。
+如果整型字面量的值在-128到127之间，那么自动装箱时不会new新的Integer对象，而是直接引用常量池中的
+Integer对象，超过范围 a1==b1的结果是false
+public static void main(String[] args) {
+ Integer a = new Integer(3);
+ Integer b = 3; // 将3自动装箱成Integer类型
+int c = 3;
+ System.out.println(a == b); // false 两个引用没有引用同一对象
+System.out.println(a == c); // true a自动拆箱成int类型再和c比较
+System.out.println(b == c); // true
+ Integer a1 = 128;
+ Integer b1 = 128;
+ System.out.println(a1 == b1); // false
+ Integer a2 = 127;
+ Integer b2 = 127;
+ System.out.println(a2 == b2); // true
+
+
+
+
+
+
+面向对象编程三大特性:
+什么是封装
+把客观事物封装成抽象的类，并且把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏
+什么是继承
+继承是从已有的类中派生出新的类，新的类能吸收已有类的数据属性和行为，并能扩展新的能力
+多态指的是类和类的关系，两个类由继承关系，存在有方法的重写，故而可以在调用时有父类引用指向子类对象。
+
+查看Object类中源码，发现其equals方法也是 == 去比较首地址值,String类覆盖了，就比较值
+基本数据类型：==比较的是值，引用类型比较的是内存中的地址
+
+
+对于一个类而言，按照如下顺序执行：
+（静态变量、静态代码块）>（初始化普通代码块）>构造函数 >普通变量
+
+当涉及到继承时，按照如下顺序执行：
+父类的静态代码块，父类静态变量，子类的静态代码块，子类静态变量
+父类的构造代码块，父类的构造函数，父类普通成员变量
+子类的构造代码块，子类的构造函数，子类普通成员变量
+
+
+https://www.cnblogs.com/yuxiaole/p/9570850.html
+Java 对象如果要比较是否相等，则需要重写 equals 方法，同时重写 hashCode 方法，而且 hashCode 方法里面使用质数 31。
+为什么要重写 equals 方法
+　　因为不重写 equals 方法，执行 user1.equals(user2) 比较的就是两个对象的地址（即 user1 == user2），肯定是不相等的
+为什么要重写 hashCode 方法
+既然比较两个对象是否相等，使用的是 equals 方法，那么只要重写了 equals 方法就好了，干嘛又要重写 hashCode 方法呢？
+其实当 equals 方法被重写时，通常有必要重写 hashCode 方法，以维护 hashCode 方法的常规协定，该协定声明相等对象必须具有相等的哈希码。
+hashCode 是用于散列数据的快速存取，如利用 HashSet/HashMap/Hashtable 类来存储数据时，都会根据存储对象的 hashCode 值来进行判断是否相同的。
+怎么重写:
+生成一个 int 类型的变量 result，并且初始化一个值，比如17
+对类中每一个重要字段，也就是影响对象的值的字段，也就是 equals 方法里有比较的字段，进行以下操作：
+int result = 17;
+result = 31 * result + (name == null ? 0 : name.hashCode());
+result = 31 * result + (age == null ? 0 : age.hashCode());
+return result;
+
+obj instanceof User（判断是否是同一个类型）
+
+
+接口和抽象类的区别：
+1，函数：接口只能是public abstract，抽象类都可以有
+2，成员变量：接口只能是public static final，抽象类都可以。
+3，抽象类只能继承一个，接口可以实现多个。
+接口设计的目的：是作为一种行为规范，让别人一看就知道，接口的实现类应该会有什么方法。bird like a Aircraft. 
+抽象类的设计目的：是本质的抽象，代码复用，当多个类的某部分实现方式相同，把他们抽取出来，作为一个父类。 BMW is a Car 
+抽象类功能强，代价高，单继承。接口功能少，但是可以多实现。
+
+
+java集合：
+ArrayList 不是线程安全的，如果遇到多线程场景，可以通过 Collections 的 synchronizedList 方
+法将其转换成线程安全的容器后再使用。
+
+List 和 Set 的区别
+List , Set 都是继承自Collection 接口
+List 特点：一个有序、容器，元素可以重复，可以插入多个null元素，元素都有索引。常用的实现类有 ArrayList、LinkedList 和 Vector。
+Set 特点：一个无序（存入和取出顺序有可能不一致）容器，不可以存储重复元素，只允许存入一个null元素，必须保证元素唯一性。
+Set只能使用迭代器遍历。
+Set 接口常用实现类是 HashSet、LinkedHashSet 以及TreeSet。
+
+
+
+
+Set和List对比
+Set：检索元素效率低下，删除和插入效率高，插入和删除不会引起元素位置改变。
+List：和数组类似，List可以动态增长，查找元素效率高，插入删除元素效率低。
+
+说一下 HashSet 的实现原理？
+HashSet 是基于 HashMap 实现的，HashSet的值存放于HashMap的key上，value统一为present，HashSet 不允许重复的值。
+
+HashSet如何检查重复？HashSet是如何保证数据不可重复的？
+向HashSet 中add ()元素时，判断元素是否存在的依据，不仅要比较hash值，同时还要结合
+equles 方法比较。
+HashSet 中的add ()方法会使用HashMap 的put()方法。
+HashMap 的 key 是唯一的，HashMap 比较key是否相等是先比较hashcode 再比较equals。
+
+HashMap实现原理
+HashMap的主干是一个Entry数组。Entry是HashMap的基本组成单元，每一个Entry包含一个key-value键值对。加上根据key算出来的hash值
+
+HashMap由数组+链表组成的，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的，如果定位到的数组位置不含链表（当前entry的next指向null）,
+那么对于查找，添加等操作很快，仅需一次寻址即可；如果定位到的数组包含链表，对于添加操作，其时间复杂度为O(n)，首先遍历链表，存在即覆盖，否则新增；
+对于查找操作来讲，仍需遍历链表，然后通过key对象的equals方法逐一比对查找。所以，性能考虑，HashMap中的链表出现越少，性能才会越好。
+hashmap减少哈希冲突:
+1. 使用链地址法（使用散列表）来链接拥有相同hash值的数据；
+2. 使用2次扰动函数（hash函数）来降低哈希冲突的概率，使得数据分布更平均；(// 与自己右移16位进行异或运算)
+3. 引入红黑树进一步降低遍历的时间复杂度，使得遍历更快；jdk1.8时链表长度大于8时自动转为红黑树，查询速度提升(遍历复杂度从O(n)降低至O(logn))
+
+
+
+hashCode（）与equals（）的相关规定：
+1. 如果两个对象相等，则hashcode一定也是相同的
+hashCode是jdk根据对象的地址或者字符串或者数字算出来的int类型的数值
+2. 两个对象相等,则两个equals方法返回true
+3. 两个对象有相同的hashcode值，它们也不一定是相等的，还要看是否equals
+4. 综上，equals方法被覆盖过，则hashCode方法也必须被覆盖
+5. hashCode()的默认行为是对堆上的对象产生独特值。如果没有重写hashCode()，则该class的两个
+对象无论如何都不会相等（即使这两个对象指向相同的数据）。
+
+如果使用Object作为HashMap的Key，应该怎么办呢？
+答：重写 hashCode() 和 equals() 方法
+1. 重写 hashCode() 是因为需要计算存储数据的存储位置，
+2. 重写 equals() 方法，值x，x.equals(null)必须返回false的这几个特性，目的是为了保证key在哈希表中的唯一性；
+
+HashMap 与 HashTable 有什么区别？
+1. 线程安全： HashMap 是非线程安全的，HashTable 是线程安全的；HashTable 内部的方法基本
+都经过  synchronized 修饰。（如果你要保证线程安全的话就使用 ConcurrentHashMap ）；
+2. 效率： 因为线程安全的问题，HashMap 要比 HashTable 效率高一点。另外，HashTable 基本被
+淘汰，不要在代码中使用它；（如果你要保证线程安全的话就使用 ConcurrentHashMap ）；
+3. 对Null key 和Null value的支持： HashMap 中，null 可以作为键，这样的键只有一个，可以有
+一个或多个键所对应的值为 null。但是在 HashTable 中 put 进的键值只要有一个 null，直接抛
+NullPointerException。
+ 4，底层数据结构： JDK1.8 以后的 HashMap 在解决哈希冲突时有了较大的变化，当链表长度大于阈
+值（默认为8）时，将链表转化为红黑树，以减少搜索时间。Hashtable 没有这样的机制。
+
+如何决定使用 HashMap 还是 TreeMap？
+对于在Map中插入、删除和定位元素这类操作，HashMap是最好的选择。然而，假如你需要对一
+个有序的key集合进行遍历，TreeMap是更好的选择。基于你的collection的大小，也许向
+HashMap中添加元素会更快，将map换为TreeMap进行有序key的遍历。
+
+HashMap 和 ConcurrentHashMap 的区别
+1. ConcurrentHashMap是线程安全的。
+2. HashMap的键值对允许有null，但是ConCurrentHashMap都不允许。
+
+Array 和 ArrayList 有何区别？
+Array 可以存储基本数据类型和对象，ArrayList 只能存储对象。
+Array 是指定固定大小的，而 ArrayList 大小是自动扩展的。
+Array 内置方法没有 ArrayList 多，比如 addAll、removeAll、iteration 等方法只有 ArrayList有。
+
+LinkedList和ArrayList的区别：
+1，ArrayList基于动态数组，在内存是连续的，随机访问速度快，扩容时，需要新建数组，把旧的复制去到新的，如果不是在尾部插入数据需要进行元素的移动
+2，LinkedList基于链表，内存上可以是不连续的，适合插入删除频繁的时候，查询需要注意遍历。
+3，遍历：LinkedList最好使用迭代器，不要使用for循环，因为通过下标get(i)，每次都会重新遍历。
+4，如果非要用ArrayList来做插入，那可以指定初始容量+尾插法，这样甚至效率能比LinkedLIst高。
+
+List arrayList = new ArrayList();
+如果像上面这样使用默认的构造方法，初始容量被设置为10。当ArrayList中的元素超过10个以后，会重新分配内存空间，使数组的大小增长到16。
+那么容量变化的规则是什么呢？请看下面的公式：
+((旧容量 * 3) / 2) + 1
+
+Iterator<String> it=list.iterator();
+it.hasNext();
+it.next();
+
+HashMap,Hashtable的区别和底层实现:
+1,Hashtable里面的方法都是线程同步，hashmap不同步
+2,HashMap允许一个空key，空value，hashtable不允许。
+底层实现：数组——链表  1.8后加入红黑树
+a，先对key计算Hash值，二次Hash然后对数组长度取模，计算出来的是数组的下标
+b，如果没有hash冲突(a中进行的hash运算没有得出的下标位置没有元素)，直接创建node存入数组
+c, 如果有冲突，先equals比较key，如果相同，就取代，不同，就插入到链表中，当链表高度达到8并且数组长度达到64，就转为红黑树。
+d, 如果存放key为null，放在下标为0的位置。
+
+ConcurrentHashMap原理，jdk1.7,jdk1.8的区别:
+我们一般不用hashtable，而是使用ConcurrentHashMap
+数据结构：
+JDK1.7版本的实现，ConcurrentHashMap 为了提高本身的并发能力，在内部采用了一个叫做 Segment 的结构，(Segment里面其实就是链表数组，也就是entry数组 Key，Value)，
+元素定位： ConcurrentHashMap 定位一个元素的过程需要进行两次Hash操作，第一次 Hash 定位到 Segment，第二次 Hash 定位到元素所在的链表的头部，
+这样设计的好处坏处：这一种结构的带来的副作用是 Hash 的过程要比普通的 HashMap 要长，
+但是带来的好处是写操作的时候可以只对元素所在的 Segment 进行操作，不会影响到其他的 Segment(并发时一个线程只锁一个Segment，提高了并发性能)
+
+
+JDK1.8版本的实现: Synchoronized + CAS(乐观锁)+红黑树：
+查询，替换，赋值操作都用了CAS
+锁：锁链表的Head节点，不影响其他元素，锁的精细度更细，效率更高，get()方法不加锁，数组是是volatile修饰的。
+
+
+volatile是Java提供的一种轻量级的同步机制。Java 语言包含两种内在的同步机制：同步块（或方法）和 volatile 变量，相比于synchronized（synchronized通常称为重量级锁）
+，volatile更轻量级，因为它不会引起线程上下文的切换和调度。但是volatile 变量的同步性较差（有时它更简单并且开销更低），而且其使用也更容易出错。
+
+
+三、类加载器
+    类加载器负责加载所有的类，其为所有被载入内存中的类生成一个java.lang.Class实例对象。一旦一个类被加载如JVM中，同一个类就不会被再次载入了。 
+	1)根类加载器（bootstrap class loader）:它用来加载 Java 的核心类，是由C++实现，负责加载/lib/rt.jar里所有的class。
+	2)扩展类加载器（extensions class loader）：它负责加载JRE的扩展目录，由Java语言实现，父类加载器为null，责加载jre/lib/ext里所有的class。	
+	3)系统类加载器（system class loader）：自定义加载器的父类(需要继承它)，负责classpath下的class，我们自己写的代码，引入的jar包，都是它来加载。
+
+双亲委派模型：
+1，向上委派：实际上就是AppClassLoader先查找缓存(每一个类加载器都有自己的缓存)是否加载了该类，有就返回，没有继续向上查找，找扩展类加载器的缓存，
+再没有，再往上查找，找根加载器的缓存。2，向下查找：委派到顶层后，还是没有找到，就从上往下查找类加载器的加载路径
+向上委派到根加载器为止，向下查找到发起加载的加载器为止。相同的class文件被不同的classloader加载就是不同的类。
+ 
+java的异常体系：
+1，所有异常都来自父类Throwable
+2，Throwable两个子类，Error(OOM)和Exception,Error 会导致程序停止，Exception不会。
+3, Exception分为 运行时异常(程序运行过程中，nullPoint，outofindex)和非运行时异常(编译就报错，写法有问题)。
+
+
+7.谈谈你对mvc的理解
+
+　　MVC是Model—View—Controler的简称。即模型—视图—控制器。MVC是一种设计模式，它强制性的把应用程序的输入、处理和输出分开。
+
+　　MVC中的模型、视图、控制器它们分别担负着不同的任务。
+
+视图: 视图是用户看到并与之交互的界面。视图向用户显示相关的数据，并接受用户的输入。视图不进行任何业务逻辑处理。
+模型: 模型表示业务数据和业务处理。相当于JavaBean。一个模型能为多个视图提供数据。这提高了应用程序的重用性
+控制器: 当用户单击Web页面中的提交按钮时,控制器接受请求并调用相应的模型去处理请求。然后根据处理的结果调用相应的视图来显示处理的结果。
+　　MVC的处理过程：首先控制器接受用户的请求，调用相应的模型来进行业务处理，并返回数据给控制器。控制器调用相应的视图来显示处理的结果。并通过视图呈现给用户。
+
+
+
+
+
+GET方式：
+
+每次发生请求之前对URL进行编码：
+
+例如：Location.href="/encodeURI"(“http://localhost/test/s?name=中文&sex=女”);
+
+更简便的方法，在服务器端配置URL编码格式：修改tomcat的配置文件server.xml：
+
+只需增加 URIEncoding=“UTF-8” 这一句，然后重启tomcat即可。
+
+POST方式：
+
+可以每次在request解析数据时设置编码格式：request.setCharacterEncoding(“utf-8”);
+
+也可以使用编码过滤器来解决，最常用的方法是使用Spring提供的编码过滤器：
+
+在Web.xml中增加如下配置
+<param-name>encoding</param-name>
+<param-value>UTF-8</param-value>
+
+Springmvc 怎么样设定重定向和转发的？
+在返回值前面加"forward:“就可以让结果转发,譬如"forward:user.do?name=method4”
+在返回值前面加"redirect:“就可以让返回值重定向,譬如"redirect:http://www.baidu.com”
+
+请求转发：
+request.getRequestDispatcher("/student_list.jsp").forward(request,response);
+重定向：
+response.sendRedirect(request.getContextPath + "/student_list.jsp")		
+总结：
+ 1、转发是在服务器端完成的，重定向是在客户端发生的；
+ 2、转发的速度快，重定向速度慢；
+ 3、转发是同一次请求，重定向是两次请求；
+ 4、转发地址栏没有变化，重定向地址栏有变化；
+ 5、转发必须是在同一台服务器下完成，重定向可以在不同的服务器下完成。	
+
+ 
+ 
+ 
+简单说明什么是递归？
+你定义函数f(n)=nf(n-1)；而f(n-1)又是这个定义的函数，这就是递归。必须要有结束条件
+
+TCP:
+
+三次握手(Three-Way Handshake)  
+原理：
+
+第一次握手：Client什么都不能确认；Server确认了对方发送正常。
+
+第二次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己接受正常，对方发送正常。
+
+第三次握手：Client确认了：自己发送、接受正常，对方发送，接受正常；Server确认了：自己发送了、接受正常，对方发送、接受正常。
+
+所以三次握手就能确认双方收发功能是否正常。
+
+
+四次挥手(Four-Way Wavehand)
+第一次挥手：Client发送关闭数据传输请求。我要关了
+
+第二次挥手：Server收到请求，发送表示自己收到的回馈。好的
+
+第三次挥手：Server发送回应表示将会关闭数据传输。我也要关了
+
+第四次挥手：Client收到信息后，发送确认收到信号回到server，此时连接断开。好的
+
+为什么建立连接是三次握手，而关闭连接却是四次挥手呢？
+
+这是因为服务端收到建立连接请求的报文后，把(确认收到，我自己收发正常)放在一个报文里发送给客户端。
+而关闭连接是，确认收到，我也要关闭了，分开发送。
+
+
+
+
+
+TCP协议和UDP协议的区别是什么
+TCP协议是有连接的，有连接的意思是开始传输实际数据之前TCP的客户端和服务器端必须通过三次握手建立连接，会话结束之后也要结束连接。而UDP是无连接的
+TCP协议保证数据按序发送，按序到达，提供超时重传来保证可靠性，但是UDP不保证按序到达，甚至不保证到达，只是努力交付，即便是按序发送的序列，也不保证按序送到。
+TCP协议所需资源多，TCP首部需20个字节（不算可选项），UDP首部字段只需8个字节。
+TCP有流量控制和拥塞控制，UDP没有，网络拥堵不会影响发送端的发送速率
+TCP是一对一的连接，而UDP则可以支持一对一，多对多，一对多的通信。
+TCP面向的是字节流的服务，UDP面向的是报文的服务。
+
+
+Http定义了与服务器交互的不同方法，最基本的方法有4种，分别是GET，POST，PUT，DELETE。URL全称是资源描述符
+1.GET请求的数据会附在URL之后，以?分割URL和传输数据，POST把提交的数据则放置在是HTTP包的包体中
+2，Get请求URL的长度是有限的，开发中曾遇到过请求(414),改为Post，把可能超长的参数放在请求体。
+3，POST的安全性要比GET的安全性高。
+
+
+
+
+
+1.servlet
+
+servlet是用java编写的服务端应用程序。
+
+2.主要功能
+
+交互式的浏览和修改数据，生成动态web内容
+
+3.必须重写doget()方法和dopost（）方法，或重写service（）方法完成对get和post的响应
+
+4.servlet 的生命周期
+1Servlet容器负责加载和实例化Servlet。当Servlet容器启动时，或者在容器检测到需要这个Servlet来响应第一个请求时，创建Servlet实例。
+2在Servlet实例化之后，容器将调用Servlet的init()方法初始化这个对象。
+
+如何配置Servlet的初始化参数？   在web.xml中该Servlet的定义标记中
+
+3Servlet容器调用Servlet的service()方法对请求进行处理。要注意的是，在service()方法调用之前，init()方法必须成功执行。
+
+4，当容器关闭，容器就会调用实例的destroy()方法，以便让该实例可以释放它所使用的资源
+
+
+
+Filter的生命周期和Servlet类似
+
+构造器：创建Filter实例是调用，Filter实例服务器一旦启动就会被创建
+
+init()：实例创建后马上被调用，用来对Filter做一些初始化的操作
+
+doFilter()：Filter的主要方法，用来完成过滤器主要功能的方法，每次访问目标资源时都会调用。
+
+destroy()：服务器停止时调用，用来释放资源。
+
+
+拦截器的概念
+    java里的拦截器是动态拦截Action调用的对象，它提供了一种机制可以使开发者在一个Action执行的前后执行一段代码，也可以在一个Action
+执行前阻止其执行，同时也提供了一种可以提取Action中可重用部分代码的方式。在AOP中，拦截器用于在某个方法或者字段被访问之前，进行拦截
+然后再之前或者之后加入某些操作。
+
+自定义拦截器的步骤
+    第一步：自定义一个实现了Interceptor接口的类，或者继承抽象类AbstractInterceptor。
+    第二步：在配置文件中注册定义的拦截器。
+    第三步：在需要使用Action中引用上述定义的拦截器，为了方便也可以将拦截器定义为默认的拦截器，这样在不加特殊说明的情况下，所有的
+Action都被这个拦截器拦截。
+
+4，过滤器与拦截器的区别
+    过滤器可以简单的理解为“取你所想取”，过滤器关注的是web请求；拦截器可以简单的理解为“拒你所想拒”，拦截器关注的是方法调用，比如拦截
+敏感词汇。
+4.1，拦截器是基于java反射机制来实现的，而过滤器是基于函数回调来实现的。（有人说，拦截器是基于动态代理来实现的）
+4.2，拦截器不依赖servlet容器，过滤器依赖于servlet容器。
+4.3，拦截器只对Action起作用，过滤器可以对所有请求起作用。
+4.4，拦截器可以访问Action上下文和值栈中的对象，过滤器不能。
+4.5，在Action的生命周期中，拦截器可以多次调用，而过滤器只能在容器初始化时调用一次。
+
+5，Spring拦截器
+5.1，抽象类HandlerInterceptorAdapter
+    我们如果在项目中使用了Spring框架，那么，我们可以直接继承HandlerInterceptorAdapter.java这个抽象类，来实现我们自己的拦截器。
+
+
+	
+	
+
+
+jDBC:
+早期进行数据库操作
+  1、原理：一般来说，java 应用程序访问数据库的过程是：
+  ①、加载数据库驱动程序；
+  ②、通过 jdbc 建立数据库连接；
+  ③、访问数据库，执行 sql 语句；
+  ④、断开数据库连接。
+
+  2、代码
+
+
+// 查询所有用户
+Public void FindAllUsers() {
+    // 1、装载 sqlserver 驱动对象
+    DriverManager.registerDriver(new SQLServerDriver());
+    // 2、通过 JDBC 建立数据库连接
+    Connection con = DriverManager.getConnection("jdbc:sqlserver://192.168.2.6:1433;DatabaseName=customer", "sa", "123");
+    // 3、创建状态
+    Statement state = con.createStatement();
+    // 4、查询数据库并返回结果
+    ResultSet result = state.executeQuery("select * from users");
+
+	
+连接池的工作原理
+
+  连接池的工作原理主要由三部分组成，分别为连接池的建立，连接池中连接的使用管理，连接池的关闭。
+  第一、连接池的建立。 一般在系统初始化时，连接池会根据系统配置建立，并在池中建立几个连接对象，以便使用时能从连接池中获取。
+  第二、连接池的管理。 连接池管理策略是连接池机制的核心，连接池内连接的分配和释放对系统的性能有很大的影响。其策略是：
+当客户请求数据库连接时，首先查看连接池中是否有空闲连接，如果存在空闲连接，则将连接分配给客户使用并作相应处理
+  第三、连接池的关闭。 当应用程序退出时，关闭连接池中所有的链接，释放连接池相关资源，该过程正好与创建相反。
+PreparedStatement相比Statement的好处
+  大多数时候我们都使用PreparedStatement代替Statement
+  1、PreparedStatement是预编译的，比Statement速度快；
+  2、代码的可读性和可维护性更好
+perstmt = con.prepareStatement("insert into tb_name (col1,col2,col2,col4) values (?,?,?,?)");
+3、安全性PreparedStatement可以防止SQL注入攻击，而Statement却不能。	
+	
+Truncate与delete的区别
+  TRUNCATE table：删除内容、不删除表结构、释放空间
+  DELETE table：删除内容、不删除表结构、不释放空间,可会滚
+  DROP table：删除内容和表结构，释放空间
+ 
+
+
+如何实现 Array 和 List 之间的转换？
+Array 转 List： Arrays. asList(array)
+List 转 Array：List 的 toArray() 方法。
+
+48. comparable 和 comparator的区别？
+共同点：
+
+都可以进行排序，都可以自定义比较规则
+两者都是返回一个描述对象之间关系的int
+不同（面试题）
+
+Comparator与Comparable同时存在的情况下，比较器Comparator优先级高。
+使用Comparable需要修改原先的实体类，是属于一种自然排序，( 
+class BookBean implements Serializable, Comparable
+@Override
+    public int compareTo(Object another) {)
+
+而Comparator不用修改原先的类的。
+// 1.创建一个实现 Comparator 接口的对象
+        Comparator comparator = new Comparator() {
+            @Override
+            public int compare(Object object1, Object object2) {
+                
+            }
+        };
+//2.将此对象作为形参传递给 TreeSet 的构造器中
+        TreeSet treeSet = new TreeSet(comparator);
+//3.向 TreeSet 中添加 步骤 1 中 compare 方法中设计的类的对象
+       treeSet.add(new NewBookBean("A",34));
+       treeSet.add(new NewBookBean("S",1));
+
+Integer.parseInt(o1)//包装类转化方法直接返回int
+
+Collections 工具类的 sort 方法有两种重载的形式（ list.sort(null); listStr.sort(new Comparator<Integer>() {});）
+1. 按照默认排序方式（升序）进行排序，由于是静态方法，调用是使用【Collections.sort(list)】即可。
+调用该方法排序时，list集合中存储的数据对象必须实现Comparable接口中的【compareTo】方法，Integer、String等类中均已实现。
+2. 按照指定排序方式进行排序，此时在传入需要排序的list集合之后，还需要提供Comparator类，并实现【compare】方法。
+https://blog.csdn.net/guanmao4322/article/details/105861342
+
+
+collection：(ArrayList(Object数组)，LinkedList(双向链表 保存着上一个和下一个对象的引用)，Vector)List(有序，可以多个null，可重复) 
+Set(不可重复，只允许一个null,大部分无序，Treeset有序)
+Map：(Hashmap,Hashtable) key唯一且大部分无序
+HashMap的主干是一个Entry数组+哈希值(底层hash算法计算出来的)。Entry是HashMap的基本组成单元，每一个Entry包含一个key-value键值对
+我们有时候会听到一种笼统的说法，认为List是有序的(这个可以说)，Set和Map是无序的，其实不然，在Set和Map中也有通过双向链表来实现有序的LinkedHashSet和LinkedHashMap
+LinkedHashSet底层是一个哈希表(数组+链表、红黑树)+链表。多了一条链表(记录元素的存储顺序),保证元素有序。
+Hash冲突： 如果两个不同的元素，通过哈希函数得出的实际存储地址相同
+java8的解决方案 链地址法，数组+链表的方式(链表则是主要为了解决哈希冲突而存在的)。
+
+
+
+序列化，反序列化:
+把对象转换为字节序列的过程称为对象的序列化。
+把字节序列恢复为对象的过程称为对象的反序列化。
+
+对象的序列化主要有两种用途：
+1 把对象的字节序列永久地保存到硬盘上，通常存放在一个文件中；
+2 在网络上传送对象的字节序列。
+
+使用：实现Serializable接口，定义s​e​r​i​a​l​V​e​r​s​i​o​n​U​I​D​:​ ​​序​列​化​的​版​本​号，作用：序列化，反序列化才会认识它，否则新加属性再编译，那自动gen出来的会报错
+ 
+ 
+ 
+activeMQ是基于主从架构的，RocketMQ是分布式架构
+
+什么是activemq
+JMS1.1规范的，面向消息(MOM)的中间件，为应用程序提供消息通信
+activemq的作用以及原理
+Activemq 的作用就是系统之间进行通信。 当然可以使用其他方式进行系统间通信， 
+如果使用 Activemq 的话可以对系统之间的调用进行解耦， 实现系统间的异步通信。 
+原理就是生产者生产消息， 把消息发送给activemq。 
+Activemq 接收到消息， 然后查看有多少个消费者， 然后把消息转发给消费者， 此过程中生产者无需参与。 消费者接收到消息后做相应的处理和生产者没有任何关系
+
+activemq的几种通信方式
+(发布-订阅方式)
+发布/订阅方式用于多接收客户端的方式.作为发布订阅的方式，可能存在多个接收客户端，并且接收端客户端与发送客户端存在时间上的依赖。
+一个接收端只能接收他创建以后发送客户端发送的信息。作为subscriber ,在接收消息时有两种方法，destination的receive方法，和实现message listener 接口的onMessage 方法
+
+3.2 p2p(point-to-point)(点对点)队列
+通信双方独享这一条通信链路的。一方发送消息，另外一方接收。
+相互通信的双方是通过一个类似于队列的方式来进行交流。
+和前面pub-sub的区别在于一个topic有一个发送者和多个接收者，而在p2p里一个queue只有一个发送者和一个接收者。
+
+publish(发布)-subscribe(订阅)方式的处理
+发布订阅模式的通信方式， 默认情况下只通知一次。 
+这种场景只适用于对消息送达率要求不高的情况。 如果要求消息必须送达不可以丢失的话， 需要配置持久订阅。 
+每个订阅端定义一个 id，  <property name="clientId" 在订阅是向 activemq 注册。 
+发布消息 <property name="subscriptionDurable" value="true"/>和接收消息时需要配置发送模式为持久化template.setDeliveryMode(DeliveryMode.PERSISTENT);
+此时如果客户端接收不到消息， 消息会持久化到服务端(就是硬盘上)， 直到客户端正常接收后为止。
+
+4.2p - p(点对点)方式的处理
+点对点模式的话， 如果消息发送不成功此消息默认会保存到 activemq 服务端直到有消费者将其消费， 所以此时消息是不会丢失的。
+
+https://www.cnblogs.com/wangjintao-0623/p/9727248.html
+
+如何解决消息重复问题:
+大致流程如下:
+        业务端的表记录已经处理消息的id,每次一个消息进来之前先判断该消息是否执行过,如果执行过就放弃,如果没有执行就开始执行消息,消息执行完成之后存入这个消息的id
+
+Activemq 宕机解决方案:失效转移（也叫故障转移，FailOver）的策略,Failover:(uri1.....n)
+如果某个ActiveMQ客户端发现uri1地址失效了，它会立即转向uri地址列表中其他可以连接的消息服务器进行重连，以保证继续正常工作
+实际上，会把消息存储一份在DB，当服务器恢复时再进行发送。
+ 
+ Thread 类中的start() 和 run() 方法有什么区别？
+start()方法被用来启动新创建的线程，而且start()内部 调用了run()方法，这和直接调用run()方法的效果不一样。
+当你调用run()方法的时候，只会是在原来的线程中调用，没有新的线程启 动，start()方法才会启动新线程。
+
+
+
+什么是线程安全：
+当多个线程访问一个对象(对象在堆内存中，可以被所有线程共享)，如果不进行额外的同步控制，调用这个对象的行为都可以获得和单线程一样的结果，那么这个对象是线程安全的。
+栈是线程独有的，所以线程安全
+
+
+Java中如何停止一个线程？
+Java提供了很丰富的API但没有为停止线程提供API。
+JDK 1.0本来有一些像stop(), suspend() 和 resume()的控制方法但是由于潜在的死锁威胁因此在后续的JDK版本中他们被弃用了。
+
+一个线程运行时发生异常会怎样？
+简单的说，如果异常没有被捕获该线程将会停止执行。
+JVM会使用Thread.getUncaughtExceptionHandler()来。如果不捕获异常，那最终是JVM处理的
+
+三、常用线程名词解释
+
+主线程：JVM调用程序main()所产生的线程。
+
+当前线程：这个是容易混淆的概念。一般指通过Thread.currentThread()来获取的进程。
+
+后台线程：指为其他线程提供服务的线程，也称为守护线程。JVM的垃圾回收线程就是一个后台线程。用户线程和守护线程的区别在于，是否等待主线程依赖于主线程结束而结束
+
+
+Java中堆和栈有什么不同？堆和队列一样，和栈相反，是先进先出的。
+为什么把这个问题归类在多线程和并发面试题里？因为栈是一块和线程紧密相关的内存区域。每个线程都有自己的栈内存，用于存储本地变量，方法参数和栈 调用，
+一个线程中存储的变量对其它线程是不可见的。而堆是所有线程共享的一片公用内存区域。对象都在堆里创建
+
+根据上下文来确定。
+比如
+void func()
+{
+    Object obj = new Object();//这个obj在函数的栈里。
+}
+
+class Test
+{
+   private Object obj = new Object();//这个obj随对应的Test对象分配在堆里
+}
+怎么检测一个线程是否拥有锁？
+在java.lang.Thread中有一个方法叫holdsLock()，它返回true如果当且仅当当前线程拥有某个具体对象的锁。
+
+JVM中哪个参数是用来控制线程的栈堆栈小的
+这个问题很简单， -Xss参数用来控制线程的堆栈大小
+
+什么是阻塞式方法？
+阻塞式方法是指程序会一直等待该方法完成期间不做其他事情，ServerSocket的accept()方法就是一直等待客户端连接。
+这里的阻塞是指调用结果返回之前，当前线程会被挂起，直到得到结果之后才会返回。此外，还有异步和非阻塞式方法在任务完成前就返回。
+
+
+有三个线程T1，T2，T3，怎么确保它们按顺序执行？
+1.先启动最后一个(T3调用T2,T2调用T1)https://blog.csdn.net/weixin_37817685/article/details/78728877
+2，可以用线程类的join()方法在一个线程中启动另一个线程,另一个线程完成（https://www.cnblogs.com/loytime/p/11721141.html）
+
+
+1、对象锁
+当一个对象中有同步方法或者同步块，线程调用此对象进入该同步区域时，必须获得对象锁。如果此对象的对象锁被其他调用者占用，
+则进入阻塞队列，等待此锁被释放（同步块正常返回或者抛异常终止，由JVM自动释放对象锁）。
+注意，方法锁也是一种对象锁。当一个线程访问一个带synchronized方法时，由于对象锁的存在，所有加synchronized的方法都不能被访问（前提是在多个线程调用的是同一个对象实例中的方法）。
+
+类锁
+一个class其中的静态方法和静态变量在内存中只会加载和初始化一份，所以，一旦一个静态的方法被申明为synchronized，此类的所有的实例化对象在调用该方法时，共用同一把锁，称之为类锁。
+
+synchronized位置的区别
+在对象锁或者类锁中，synchronized的位置就是锁的大小，写在类名上的synchronized比写在代码块上明显颗粒度要大很多。效率也会更低。
+
+泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数。
+java语言中由关键字enum来定义一个枚举类型。
+ 
+
+LocalDate today = LocalDate.now();
+DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyyMMdd");
+String text = today.format(formatters)
+
+ 
+ 
+ @Component和@Bean的区别是什么
+
+1.作用对象不同。@Component注解作用于类，而@Bean注解作用于方法。
+
+2.@Component注解通常是通过类路径扫描来自动侦测以及自动装配到Spring容器中（我们可以使用@ComponentScan注解定义要扫描的路径）。@Bean注解通常是在标有该注解的方法中定义产生这个bean，告诉Spring这是某个类的实例，当我需要用它的时候还给我。
+
+3.@Bean注解比@Component注解的自定义性更强，而且很多地方只能通过@Bean注解来注册bean。比如当引用第三方库的类需要装配到Spring容器的时候，就只能通过@Bean注解来实现。
+@Bean注解的使用示例：
+
+将一个类声明为Spring的bean的注解有哪些？
+
+我们一般使用@Autowired注解去自动装配bean。而想要把一个类标识为可以用@Autowired注解自动装配的bean，可以采用以下的注解实现：
+
+1.@Component注解。通用的注解，可标注任意类为Spring组件。如果一个Bean不知道属于哪一个层，可以使用@Component注解标注。
+
+2.@Repository注解。对应持久层，即Dao层，主要用于数据库相关操作。
+
+3.@Service注解。对应服务层，即Service层，主要涉及一些复杂的逻辑，需要用到Dao层（注入）。
+
+4.@Controller注解。对应Spring MVC的控制层，即Controller层，主要用于接受用户请求并调用Service层的方法返回数据给前端页面。
+
+
+
+
+//冒泡排序算法
+        int[] numbers=new int[]{1,5,8,2,3,9,4};
+        //需进行length-1次冒泡
+        for(int i=0;i<numbers.length-1;i++)
+        {
+            for(int j=0;j<numbers.length-1-i;j++)
+            {
+                if(numbers[j]>numbers[j+1])
+                {
+                    int temp=numbers[j];
+                    numbers[j]=numbers[j+1];
+                    numbers[j+1]=temp;
+                }
+            }
+        }
+        System.out.println("从小到大排序后的结果是:");
+        for(int i=0;i<numbers.length;i++)
+            System.out.print(numbers[i]+" ");
+    }
+
