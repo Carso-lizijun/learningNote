@@ -35,7 +35,7 @@ https://blog.csdn.net/xzd315752647/article/details/86318870
 
 命令	备注
 lpush/rpush	左/右插入
-lpop/rpop	
+lpop/rpop	(左右弹出，弹出之后会删除掉)
 rpop/lpush	右出左进
 
 格式: lpush name value
@@ -46,7 +46,7 @@ rpop/lpush	右出左进
 命令	备注
 sadd k v1 v2 v3	
 smembers k	获取所有制
-sismembers k v	判断是不是包含
+sismember k v	判断是不是包含
 spop k	随机吐出一个值, 可用抽奖 会删除
 srandmember k n	随机从集合抽取n个值, 不会删除
 
