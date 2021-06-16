@@ -104,12 +104,21 @@ redis的内存淘汰机制：
 怎么实现Redis的高可用？
 1,数据持久化:AOF,RDB
 	说一下Redis的持久化的方式
-	AOF:
+AOF:
+	默认是不开启的，我们需要手动进行配置！aof保存的是 appendonly.aof 文件
+	appendonly no #改为yes就开启了
+	# The name of the append only file (default: "appendonly.aof"),appendfilename "appendonly.aof"
 	原理：Redis 将所有对数据库进行过写入的命令记录到 AOF 文件
 	AOF 保存模式:三种，不保存，每秒，每命令
 	优点：最大程度保证了数据的完整，可以查看到里面的命令
 	缺点：文件大，恢复时间长，运行效率较低。
-
+	
+Rdb（redis系统默认持久化策略）:
+	 默认配置信息：
+	    save 900 1              #在900秒(15分钟)之后，如果至少有1个key发生变化，则dump内存快照。
+	    save 300 10            #在300秒(5分钟)之后，如果至少有10个key发生变化，则dump内存快照。
+	    save 60 10000        #在60秒(1分钟)之后，如果至少有10000个key发生变化，则dump内存快照。
+	    
 	RDB持久化的原理：fork一个子进程记录某个时间点全部数据的快照
 	方式：SAVE：会阻塞Redis Server的进程，直到RDB文件创建完  BGSAVE：由子线程来创建不阻塞
 	触发：redis.conf 配置 SAVE m n定时(用的BGSAVE)，主从复制是
@@ -132,7 +141,8 @@ redis的内存淘汰机制：
 
 3,哨兵：哨兵可以同时监视多个主从服务器，并且在被监视的master下线时，自动将某个slave提升为master，然后由新的master继续接收命令  src/redis-sentinel 
 
-4,Redis 集群（Cluster）
+4,Redis 集群（Cluster） https://www.cnblogs.com/chenmh/p/9221468.html
+redis从3.0版本开始引入了redis-cluster(集群)。从主从-哨兵-集群可以看到redis的不断完善；主从复制是最简单的节点同步方案无法主从自动故障转移。哨兵可以同时管理多个主从同步方案同时也可以处理主从自动故障转移，通过配置多个哨兵节点可以解决单点网络故障问题，但是单个节点的性能压力问题无法解决。集群解决了前面两个方案的所有问题。
 
 
 Redis事务机制：
@@ -140,7 +150,7 @@ Redis开启事务用multi指令，在multi指令后面的指令会被放进一�
 不管指令正确或者错误，都会执行,中途遇见错误指令也会继续执行后面的指令，Redis并没有像mysql那样的事务回滚机制。
 在redis中有一个watch指令，与事务的关系非常紧密。watch指令监控的key如果在执行事务前发生了变化，那么后面的第一个事务不会被执行！
 
-
+//2021-06-16
 java如何使用Readis：
 
 CBXredis实例：
